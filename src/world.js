@@ -9,6 +9,34 @@ const WORLD_STYLES={
  city:{fog:[.064,.1,.14],accent:'ice',sky:'#14273b'},
  void:{fog:[.018,.064,.104],accent:'ice',sky:'#0a182f'}
 };
+function sourceNave(root,index,stage,seed){
+ const accent=index===2?'red':index===1?'pale':'blue';
+ // The film's strongest world signature: an open cathedral aisle, warm fire at
+ // human scale, cyan glass above it, and an unobstructed view of the god.
+ for(let i=0;i<12;i++){
+  const z=17-i*5.25;
+  for(const side of [-1,1]){
+   const x=side*(11.4+(i%2)*.45);
+   ob(root,'cube','dark',[x,5.5,z],[1.05,11,1.15]);
+   ob(root,'spike','metal',[x,12.1,z],[1.25,4.6,1.2]);
+   beam(root,[x,9.8,z],[side*5.2,17.2,z],.34,'metal');
+   beam(root,[side*5.2,17.2,z],[side*.65,19.1,z],.26,accent);
+   if(i%2===0){
+    ob(root,'cube','bronze',[side*7.55,.62,z],[.58,1.22,.58]);
+    ob(root,'sphere','flame',[side*7.55,1.58,z],[.42,.72,.42]);
+    ob(root,'crystal',i%4===0?'ice':'blue',[side*13.2,10.4,z-.5],[.48,3.1,.5],[.2,0,side*.15]);
+   }
+  }
+ }
+ for(let i=0;i<18;i++){
+  const side=i%2?-1:1,z=14-Math.floor(i/2)*6.05,x=side*(8.1+(i%3)*.32);
+  ob(root,'cube','bronze',[x,.3,z],[.34,.58,.34]);
+  ob(root,'sphere','flame',[x,.83,z],[.24,.46,.24]);
+ }
+ // Far rose-window tracery frames the titan without crossing the walkable view.
+ ob(root,'torus',index===2?'red':'blue',[0,19.2,-61],[13.5,13.5,.32]);
+ for(let i=0;i<12;i++){const a=i*Math.PI/6;beam(root,[0,19.2,-60.7],[Math.sin(a)*7.8,19.2+Math.cos(a)*7.8,-60.7],.09,index===2?'red':'blue');}
+}
 function buildWorld(renderer,index){const book=BOOK[index],style=WORLD_STYLES[book.world],root=new Node();if(renderer.reset)renderer.reset(root);else{renderer.root=root;renderer.texCache.forEach(t=>renderer.gl.deleteTexture(t));renderer.texCache.clear();}const stage={root,book,style,altars:[],embers:[],floaters:[],titan:null,mask:null,ring:null,player:null,companion:null,portal:null,monoliths:[],banners:[],lights:[],sky:[],realmDetails:[],world:book.world};
  const seed=i=>{let x=Math.sin(i*92.23+index*91.7)*47123.727;return x-Math.floor(x)};
  const floorMat=book.world==='void'?'obsidian':book.world==='eclipse'?'bronze':'stone';
@@ -22,7 +50,7 @@ function buildWorld(renderer,index){const book=BOOK[index],style=WORLD_STYLES[bo
     if(i%3===0){const c=ob(root,'crystal',i%2?'blue':'ice',[side*11,8.5,z],[.42,2.1,.52],[.18,seed(i*4),side*.3]);stage.floaters.push({n:c,base:8.5,phase:i+side});}
     if(i%4===1){ob(root,'cube','bronze',[side*7.6,.8,z],[.6,1.4,.65]);ob(root,'sphere','flame',[side*7.6,1.95,z],[.7,1,.7]);}
   }
-  if(i%2===0 && book.world!=='void' && book.world!=='city'){const pz=z-.1;ob(root,'cube','metal',[0,10.1,pz],[17,.28,1]);for(const side of [-1,1]){const n=ob(root,'cube','dark',[side*3.45,12,pz],[.45,7.8,.7],[0,0,side*.75]);n.pos[0]=side*3.6;}ob(root,'spike','metal',[0,15.7,pz],[2,4.2,1.1]);}
+  if(i%2===0 && book.world!=='void' && book.world!=='city'){const pz=z-.1;for(const side of [-1,1]){beam(root,[side*9.1,7.2,pz],[side*4.4,14.8,pz],.28,'metal');beam(root,[side*4.4,14.8,pz],[side*.7,17.1,pz],.2,i%4===0?'blue':'dark');}ob(root,'crystal',i%4===0?'ice':'metal',[0,17.5,pz],[.38,1.35,.4]);}
  }
  // Landmark silhouettes beyond the walkable causeway.
  for(let i=0;i<16;i++){const side=i%2?-1:1,xx=side*(18+seed(i+50)*27),zz=22-seed(i+100)*95,h=9+seed(i+400)*22;spire(root,xx,-2,zz,h,i%3===0?'metal':'dark');if(i%4===0){ob(root,'crystal','softblue',[xx,4+seed(i)*17,zz+4],[1.2,5,1.1],[.3,.4,0])}}
@@ -37,6 +65,7 @@ function buildWorld(renderer,index){const book=BOOK[index],style=WORLD_STYLES[bo
  if(book.world==='void'){
   for(let i=0;i<38;i++){const x=(seed(i+210)-.5)*50,z=(seed(i+240)-.6)*108,y=(seed(i+270)-.5)*14+3;const n=ob(root,'cube',i%5===0?'softblue':'stone',[x,y,z],[1+seed(i)*3,.2+seed(i+6)*.3,1+seed(i+18)*4],[seed(i)*.3,seed(i+30)*2,seed(i+20)*.4]);stage.floaters.push({n,base:y,phase:i*.47});}
  }
+ sourceNave(root,index,stage,seed);
  // Each realm gains its own architectural language beyond the shared pilgrimage route.
  adornRealm(root,index,stage,seed);
  // Thin floor inscriptions lead the viewer through the acts.
@@ -55,51 +84,57 @@ function buildWorld(renderer,index){const book=BOOK[index],style=WORLD_STYLES[bo
 function createPlayer(root,stage){const traveler=group(root,[0,0,12]);const cloak=ob(traveler,'taper','black',[0,1.12,0],[1.18,1.95,.83],[0,0,0]);const upper=ob(traveler,'sphere','dark',[0,1.92,.04],[.87,.9,.74]);ob(traveler,'sphere','black',[0,2.35,.19],[.71,.76,.72]);ob(traveler,'sphere',mkmat('#0b111a',0,1),[0,2.28,.47],[.55,.55,.17]);ob(traveler,'spike','metal',[0,1.1,-.43],[1,1.55,.62],[2.7,0,0]);for(let side of [-1,1]){ob(traveler,'cyl','metal',[side*.48,.53,0],[.17,1.2,.21],[0,0,side*.1]);ob(traveler,'cyl','dark',[side*.65,1.64,.05],[.22,1.02,.26],[0,0,side*.24]);}const bag=ob(traveler,'cube','bronze',[-.49,1.53,-.41],[.45,.6,.34]);
  const dog=group(root,[1.35,0,12.7]);ob(dog,'sphere','bronze',[0,.62,0],[.6,.62,1.13]);ob(dog,'sphere','metal',[0,.71,.55],[.68,.73,.56]);ob(dog,'sphere','dark',[0,.67,.86],[.44,.4,.42]);ob(dog,'sphere','bone',[0,.45,1.06],[.24,.19,.23]);for(let side of [-1,1]){ob(dog,'spike','metal',[side*.37,1.15,.51],[.29,.65,.32],[0,0,side*.22]);for(let z of [-.34,.42])ob(dog,'cyl','bronze',[side*.29,.24,z],[.18,.48,.22])}ob(dog,'spike','dark',[0,.72,-.85],[.18,1,.18],[1.15,0,0]);
  const aura=ob(traveler,'torus',mkmat('#6fd5ec',.6,.13),[0,.055,0],[2.6,2.6,1],[Math.PI/2,0,0]);return{traveler,dog,cloak,upper,bag,aura}}
-function createTitan(root,book,index,stage){const titan=group(root,index===4?[0,-1,-76]:index===5?[0,0,-69]:[0,0,-52]);stage.titan=titan;
- if(index===5){
-  const orb=ob(titan,'sphere','black',[0,18,0],[14,14,14]);stage.mask=orb;
-  const halo=ob(titan,'torus',mkmat('#72edff',1.5,.95),[0,18,1],[31,31,1]);const inner=ob(titan,'sphere',mkmat('#7bedff',1.8,.8),[0,18,8],[3.8,3.8,3.8]);const inner2=ob(titan,'sphere',mkmat('#bbffff',2,.9),[0,18,10],[1.5,1.5,1.5]);
-  for(let i=0;i<13;i++){let angle=i*Math.PI*2/13;const r=16+Math.sin(i*12)*3,n=ob(titan,'crystal',i%2?'blue':'ice',[Math.cos(angle)*r,18+Math.sin(angle)*r,0],[.65,3+Math.sin(i*30)*1.8,.65],[.3,0,-angle]);stage.floaters.push({n,base:n.pos[1],phase:i*2});}
-  for(let i=0;i<17;i++){let phi=i*.67,a=[Math.sin(i*43)*4,18+Math.cos(i*17)*7,4],b=[Math.sin(i*43+1)*14,18+Math.cos(i*17+1)*13,4];const n=beam(titan,a,b,.095,mkmat('#89eeff',1.8,.75));stage.lights.push({n,phase:i*.5});}
+function createTitan(root,book,index,stage){
+ const position=index===4?[0,-4,-66]:index===5?[0,-1,-58]:[0,-2,-55];
+ const scale=index===4?[1.22,1.22,1.22]:index===5?[1.12,1.12,1.12]:[1.38,1.38,1.38];
+ const titan=group(root,position,scale);stage.titan=titan;
+ if(index===5){ // The film resolves Azrath as a suspended electric birth-event.
+  const outer=ob(titan,'sphere',mkmat('#287aa4',1.45,.22),[0,18,0],[10.5,10.5,10.5]);
+  const core=ob(titan,'sphere',mkmat('#d9ffff',2.4,.94),[0,18,2.8],[5.4,5.4,5.4]);stage.mask=core;
+  const halo=ob(titan,'torus',mkmat('#7cecff',2,.92),[0,18,1],[18.5,18.5,.75]);
+  ob(titan,'torus',mkmat('#baf8ff',1.7,.58),[0,18,-.5],[23,23,.32],[.35,.2,.15]);
+  for(let i=0;i<20;i++){const angle=i*Math.PI*2/20,r=12+(i%4)*1.2,n=ob(titan,'crystal',i%3?'blue':'ice',[Math.cos(angle)*r,18+Math.sin(angle)*r,1],[.38,2.2+(i%5)*.55,.4],[.25,0,-angle]);stage.floaters.push({n,base:n.pos[1],phase:i*.6});}
+  for(let i=0;i<14;i++){const a=i*.91,b=i*1.77,n=beam(titan,[Math.sin(a)*5,18+Math.cos(a)*5,3],[Math.sin(b)*20,18+Math.cos(b)*14,3],.12,mkmat('#a9f8ff',2,.8));stage.lights.push({n,phase:i*.43});}
+  for(let i=0;i<11;i++)spire(titan,(i-5)*3.1,-8,-2-(i%3)*2,5+Math.abs(i-5)*1.4,i%3?'dark':'softblue');
   stage.ring=halo;return titan;
  }
- if(index===4){ // Iona: city shoulders, stone cliff-body, waterfalls and reaching massive claw.
-  ob(titan,'sphere','metal',[1,13,0],[19,24,12]);ob(titan,'taper','stone',[0,8,0],[16,18,13]);for(let i=0;i<27;i++){let a=i*.83,x=Math.sin(a)*8.4,y=6+(i%7)*2,z=-1+Math.cos(a)*4.3;spire(titan,x,y,z,6+(i%5)*2.1,i%4===0?'bronze':'dark')}
-  ob(titan,'sphere','bone',[0,27,2],[7.7,11.3,6]);const f=ob(titan,'plane',mkmat('#e1f2fa',1,1,makeMask('iona')),[0,27,7.05],[8.25,10.6,1]);stage.mask=f;
-  crystals(titan,24,10,25,6,false);
-  for(let i=0;i<18;i++){const xx=(i-9)*.66;const n=ob(titan,'cube',mkmat('#5ad9fd',1,.47),[xx,12-(i%4),7],[.18,20+(i%5)*4,.08]);stage.lights.push({n,phase:i*.31})}
-  for(let i=0;i<7;i++){const xx=(i-3)*3.2;ob(titan,'cube',mkmat('#60d8ff',1,.32),[xx,2,9.5],[.4,9+Math.abs(i-3)*2,.08]);}
-  const arm=group(titan,[9,17,3]);beam(arm,[0,0,0],[7,-8,6],4,'metal');beam(arm,[7,-8,6],[8.5,-13,8],3,'dark');ob(arm,'sphere','metal',[8,-13,8],[6,2.5,4]);for(let i=0;i<5;i++){const xx=5+(i-2)*2;beam(arm,[xx,-13,8],[xx+1,-19+Math.abs(i-2),11],.62,'dark');ob(arm,'spike','blue',[xx+1.1,-20+Math.abs(i-2),11],[.9,3.7,.78],[.3,0,(i-2)*.12]);}
-  stage.ring=ob(titan,'torus',mkmat('#66d9ff',.9,.34),[0,27,-4],[19,23,1]);stage.arm=arm;return titan;
+ if(index===4){ // Iona: the skull-faced city body and its luminous waterfalls.
+  ob(titan,'sphere','black',[0,14,0],[18,24,11]);ob(titan,'taper','stone',[0,7,0],[16,20,12]);
+  for(let i=0;i<31;i++){const a=i*.81,x=Math.sin(a)*9,y=4+(i%8)*2.5,z=-1+Math.cos(a)*4;spire(titan,x,y,z,5+(i%5)*2.4,i%4===0?'bronze':'dark')}
+  ob(titan,'sphere','bone',[0,29,2.2],[8.1,11.6,6.1]);const face=ob(titan,'plane',mkmat('#e9f6f7',1.25,1,makeMask('iona')),[0,29,8.05],[8.6,11.2,1]);stage.mask=face;
+  crystals(titan,28,11.2,28,7,true);
+  for(let i=0;i<16;i++){const x=(i-7.5)*.78,n=ob(titan,'cube',mkmat('#65e7ff',1.6,.62),[x,14-(i%4),7.1],[.21,23+(i%5)*4,.1]);stage.lights.push({n,phase:i*.31})}
+  for(let i=0;i<9;i++)spire(titan,(i-4)*3.2,-3,8,8+Math.abs(i-4)*1.7,i%3?'dark':'metal');
+  const arm=group(titan);beam(arm,[8.5,18,2.5],[15,10,8],4,'metal');beam(arm,[15,10,8],[18,4,12],3,'dark');ob(arm,'sphere','metal',[18,4,12],[6.4,3.1,4.2]);for(let i=0;i<5;i++){const x=14+(i-2)*2.25;beam(arm,[x,4,12],[x+1,0+Math.abs(i-2),16],.68,'dark');ob(arm,'spike','blue',[x+1.2,-1+Math.abs(i-2),16.5],[.95,4.2,.85],[.35,0,(i-2)*.13]);}
+  stage.ring=ob(titan,'torus',mkmat('#65e5ff',1.4,.5),[0,29,-4],[19,23,.8]);stage.arm=arm;return titan;
  }
- // Repeating visual DNA from the source: armored torso / crystal halo / black hood / luminous chest.
- ob(titan,'sphere','black',[0,7.7,0],[10,12,6]);ob(titan,'sphere','metal',[0,7.1,.5],[8.6,9.8,5.6]);ob(titan,'taper','dark',[0,3.6,0],[7,8,5]);
- for(let i=0;i<9;i++){const y=11.35-i*.95,len=3.85-Math.abs(i-4)*.3;for(let side of [-1,1]){let a=[side*.15,y,2.75],b=[side*len,y-.4-Math.sin(i*.6)*.2,3.12];beam(titan,a,b,.2,index===2?'red':'blue');}}
- beam(titan,[0,11.4,3],[0,4.4,3.55],.32,'ice');
- ob(titan,'sphere','black',[0,15.4,1.1],[7,8,6.2]);ob(titan,'sphere','dark',[0,16,1.8],[5.3,6.6,4.6]);
- const maskName=index===0?'x':index===1?'skull':index===2?'horn':'skull';
- const mask=ob(titan,'plane',mkmat('#dcf7ff',1,1,makeMask(maskName)),[0,16.4,4.21],[5.2,index===1?5.7:5.0,1]);stage.mask=mask;
- const halo=ob(titan,'torus',mkmat(index===2?'#ed6074':'#7deaff',1.25,.66),[0,16.1,-3],[21,21,1]);stage.ring=halo;
- for(let i=0;i<18;i++){let angle=Math.PI*2*i/18,xx=Math.sin(angle)*9,yy=16.1+Math.cos(angle)*9.2;const n=ob(titan,'crystal',i%4===0?'ice':'blue',[xx,yy,-2.3],[.6,5.8+(i%5),.5],[0,0,-angle]);stage.floaters.push({n,base:yy,phase:i*.5});}
- for(let i=0;i<7;i++){const side=i%2?-1:1,x=side*(5+(i%4)*1.4);ob(titan,'spike','metal',[x,10+(i%3)*2,0],[1.6,3.6+(i%4),1.5],[0,0,-side*.5]);}
- const arms=[];for(let side of [-1,1]){
-  const arm=group(titan,[side*4.7,11.1,0]);ob(arm,'sphere','metal',[side*.7,-.2,.5],[3.6,3.1,3]);beam(arm,[side*.7,-.3,.5],[side*3.3,-3.9,1.8],2.8,'dark');ob(arm,'sphere','metal',[side*3.1,-3.7,1.8],[2.9,2.6,2.6]);beam(arm,[side*3.1,-3.7,1.8],[side*4.3,-7.7,3.3],2.1,'metal');ob(arm,'sphere','dark',[side*4.4,-8.1,3.3],[2.65,2.15,2.1]);for(let i=0;i<4;i++){const x=side*(2.9+i*1);beam(arm,[x,-8.5,3],[x+side*.5,-10.6+(i%2)*.35,4.8],.47,'metal');ob(arm,'spike',i%2===0?'blue':'metal',[x+side*.55,-11.9+(i%2)*.35,5],[.63,2.6,.65],[.38,0,side*.18]);}arms.push(arm)}stage.arms=arms;
- const chestTex=makeMask('thaum');const chest=ob(titan,'plane',mkmat('#95f4ff',1.3,1,chestTex),[0,8.1,3.75],[5.7,5.7,1]);stage.chest=chest;
- ob(titan,'torus',mkmat('#73d8f7',1,.73),[0,8.2,3.72],[6.5,6.5,.6]);
- for(let i=0;i<9;i++){const a=i*.6-.9;ob(titan,'cube','metal',[Math.sin(i*1.43)*2.6,7.8-(i%3)*1.15,-2.1],[.32,3,.5],[0,0,a]);}
- if(index===0){ // Torn layered hood and lateral filaments surrounding the precise LED smile.
-  for(let i=0;i<12;i++){let side=i%2?-1:1,xx=side*(3+(i%5)*.4);beam(titan,[xx,18,2],[xx+side*.4,7-(i%3)*1.6,1.5],.09,'bronze');}
+ // Shared film silhouette: colossal black armor, luminous ribs, mask, claws and crystal corona.
+ const accent=index===2?'red':'blue',haloColor=index===2?'#ff5d72':'#70e8ff';
+ ob(titan,'taper','black',[0,3.1,0],[8.8,10.5,5.7]);
+ ob(titan,'sphere','black',[0,9.2,0],[12.2,13.4,6.7]);
+ ob(titan,'sphere','metal',[0,9.4,.75],[10.2,11.7,6.1]);
+ ob(titan,'taper','dark',[0,5.2,1.2],[8.9,8.8,5.8]);
+ for(let i=0;i<10;i++){const y=13-i*.93,len=5.25-Math.abs(i-4.5)*.34;for(const side of [-1,1])beam(titan,[side*.3,y,4.1],[side*len,y-.42,4.75],.25,index===2&&i%2?'red':'ice');}
+ beam(titan,[0,13.4,4.15],[0,3.7,5],.39,'ice');
+ for(const side of [-1,1]){
+  ob(titan,'sphere','metal',[side*8.2,13.2,.6],[5.1,3.5,4.2]);
+  for(let j=0;j<5;j++)ob(titan,'spike',j%2?'dark':'metal',[side*(8.5+j*1.15),14.2+j*.35,-.2],[1.35,3.7+j*.7,1.25],[.1,0,-side*(.55+j*.08)]);
  }
- if(index===1){ // Bone-white scream; severe cathedral spikes.
-  for(let i=0;i<9;i++){let xx=(i-4)*.71;ob(titan,'crystal','pale',[xx,12.1,-2.4],[.45,3.5+(i%3)*1,.5],[0,0,(i-4)*.11]);}
- }
- if(index===2){ // Two iron horns and a brutal azure grin, exactly the red-eclipse visual form.
-  beam(titan,[-2.25,19.1,1.8],[-4.0,24.7,1.9],.88,'metal');ob(titan,'spike','dark',[-4.5,26.0,2.0],[1.3,4,1.4],[0,0,-.2]);beam(titan,[2.25,19.1,1.8],[4.0,24.7,1.9],.88,'metal');ob(titan,'spike','dark',[4.5,26.0,2.0],[1.3,4,1.4],[0,0,.2]);ob(titan,'crystal','blue',[0,21.25,2.3],[.75,1.8,.7]);
-  for(let i=0;i<6;i++)beam(titan,[Math.sin(i)*7,13,2],[Math.sin(i+2)*8,5,2],.1,'bronze');
- }
- if(index===3){ // The god who eats architectural sound: expanded waveform mouth at its chest.
-  chest.scale=[9,9,1];chest.pos=[0,8.5,4];ob(titan,'torus',mkmat('#83ddef',1.6,.8),[0,8.5,3.9],[10,10,.5]);for(let i=0;i<9;i++){let a=(i-4)*.38;const n=ob(titan,'torus',mkmat('#539ac4',.9,.3),[0,8.5,2],[7.2+i*.23,7.2+i*.23,.4],[.04,0,a]);stage.floaters.push({n,base:8.5,phase:i*.22});}
- }
+ ob(titan,'sphere','black',[0,19.2,1],[7.4,8.3,6.1]);ob(titan,'taper','dark',[0,18.1,1.5],[7.3,8.5,5.7],[Math.PI,0,0]);
+ const maskName=index===0?'x':index===2?'horn':'skull';
+ const mask=ob(titan,'plane',mkmat('#efffff',1.35,1,makeMask(maskName)),[0,19.4,6.25],[6.35,index===1?7.1:6.25,1]);stage.mask=mask;
+ const halo=ob(titan,'torus',mkmat(haloColor,1.65,.72),[0,19,-3.5],[20.5,20.5,.75]);stage.ring=halo;
+ for(let i=0;i<24;i++){const angle=Math.PI*2*i/24,r=11.6+(i%3)*.45,x=Math.sin(angle)*r,y=19+Math.cos(angle)*r;const n=ob(titan,'crystal',i%4===0?'ice':'blue',[x,y,-2.6],[.72,6.2+(i%6)*1.05,.65],[.05,0,-angle]);stage.floaters.push({n,base:y,phase:i*.45});}
+ const arms=[];for(const side of [-1,1]){
+  const arm=group(titan);beam(arm,[side*7.4,13,.8],[side*12.2,8.5,3.1],3.35,'dark');ob(arm,'sphere','metal',[side*12.1,8.4,3.1],[3.5,3.1,3.25]);beam(arm,[side*12.1,8.2,3.1],[side*14.3,3.3,6.2],2.55,'metal');ob(arm,'sphere','dark',[side*14.5,2.9,6.4],[3.6,2.4,2.7]);
+  for(let i=0;i<5;i++){const x=side*(11.7+i*1.32),tipX=x+side*.7;beam(arm,[x,2.5,6.3],[tipX,-.4+Math.abs(i-2)*.48,9.5],.55,'metal');ob(arm,'spike',i%2?'ice':'blue',[tipX,-1.65+Math.abs(i-2)*.48,10],[.68,3.05,.7],[.36,0,side*.16]);}arms.push(arm);
+ }stage.arms=arms;
+ const chest=ob(titan,'plane',mkmat('#a9f8ff',1.65,1,makeMask('thaum')),[0,8.7,5.55],[index===3?8.2:5.8,index===3?8.2:5.8,1]);stage.chest=chest;
+ ob(titan,'torus',mkmat('#6de7ff',1.45,.8),[0,8.7,5.45],[index===3?9.2:6.7,index===3?9.2:6.7,.6]);
+ if(index===0){for(let i=0;i<14;i++){const side=i%2?-1:1,x=side*(3.4+(i%5)*.46);beam(titan,[x,21.7,2],[x+side*.7,8-(i%3)*1.5,1.1],.1,'bronze');}}
+ if(index===1){for(let i=0;i<11;i++){const x=(i-5)*.78;ob(titan,'crystal',i%3?'pale':'ice',[x,14.5,-2.1],[.52,4+(i%4)*.9,.55],[0,0,(i-5)*.095]);}}
+ if(index===2){beam(titan,[-2.4,22,2.1],[-5.4,28.5,1.7],1.05,'metal');ob(titan,'spike','dark',[-6.2,30,1.6],[1.55,4.8,1.5],[0,0,-.32]);beam(titan,[2.4,22,2.1],[5.4,28.5,1.7],1.05,'metal');ob(titan,'spike','dark',[6.2,30,1.6],[1.55,4.8,1.5],[0,0,.32]);ob(titan,'crystal','ice',[0,24,2.5],[.9,2.3,.85]);}
+ if(index===3){for(let i=0;i<7;i++){const a=(i-3)*.3,n=ob(titan,'torus',mkmat('#64d9ff',1,.27),[0,8.7,3],[7.3+i*.42,7.3+i*.42,.35],[.04,0,a]);stage.floaters.push({n,base:8.7,phase:i*.25});}}
  return titan;
 }
 function createVignette(root,chapter,act,x,z,stage){

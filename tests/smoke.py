@@ -19,6 +19,10 @@ def run():
     QA.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as playwright:
         binary = shutil.which('chromium') or shutil.which('google-chrome')
+        if not binary:
+            mac_chrome = Path('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
+            if mac_chrome.is_file():
+                binary = str(mac_chrome)
         options = {'headless': True, 'args': ['--no-sandbox']}
         if binary: options['executable_path'] = binary
         browser = playwright.chromium.launch(**options)

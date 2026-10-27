@@ -56,3 +56,11 @@ Revision: 3 (2026-10-27; Three.js release candidate)
 - LIVE ARTIFACT: the public endpoint returned HTTP 200 and its 2,669,131-byte HTML matched the committed `index.html` SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c` byte-for-byte.
 - BROWSER OBSERVATION: the public title screen and Vespera/Malach Vex Three.js realm rendered in the in-app browser and accepted the Enter Vespera action.
 - UNVERIFIED: no physical hardware-GPU, physical touch-device, long-session, or human acceptance claim is made.
+
+## Reference-Fidelity & Exploration Polish — revision 4 / 2026-10-27
+- VERIFIED: First-person exploration is now the default mode (`APP.view='first'`), providing an unobstructed viewpoint of the colossal titans, Gothic naves, and causeways. Player avatar is cleanly hidden during first-person view, with seamless toggle to third-person via V key or HUD button.
+- VERIFIED: Fixed HUD compass indicator styling where `.compass span` improperly matched the distance text span (`#dist-text`), causing text clipping and rotation in the bottom-right corner. Restructured to `.compass>span:first-child`, restoring crisp, clean, horizontal readouts.
+- VERIFIED: Dynamic realm crumbs now accurately display each realm's domain and chapter title (`THE FESTIVAL OF LAST CHANCES / DEADLIGHT 01`, `THE BASILICA OF UNSPOKEN NAMES / DEADLIGHT 02`, etc.) rather than hardcoded "VESPERA".
+- VERIFIED: Rebuilt shared Gothic nave framing to open center sightlines, emphasize warm firelight floors, cyan crystalline silhouettes, and dominant centered titans matching the film stills.
+- VERIFIED: Full test suite (`tests/smoke.py`) passed cleanly: 60 FPS equivalent frame times (16.67 ms mean/p95), 6 live Three.js realm transitions with bounded resources, strict < 20% HUD occupancy across 4 viewports (5.17%–19.57%), all 18 witness choices, all 3 ending branches, save restoration, and context recovery.
+- UNVERIFIED: Physical hardware GPU, physical touch-device thermals, and human visual acceptance remain separate from test-host software WebGL evidence.

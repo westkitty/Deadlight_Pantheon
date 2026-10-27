@@ -45,6 +45,18 @@
 | Public browser render | PASS (observed scope) | Public title screen and Vespera/Malach Vex Three.js realm rendered; Enter Vespera interaction succeeded |
 | Physical hardware acceptance | UNVERIFIED | No desktop hardware-GPU profiling or physical touch/thermal run |
 
+## Revision 4 evidence (Reference Fidelity & Exploration Polish)
+
+| Requirement | State | Evidence |
+|---|---|---|
+| Default First-Person View | PASS | `APP.view='first'` defaults to unobstructed first-person camera; player avatar mesh hidden; toggleable via V key or HUD button |
+| Overlay Union under 20% | PASS | 1920x1080: 5.17% (walk), 6.37% (prompt); 1440x900: 10.19% (walk/prompt); 390x844: 17.12% (walk/prompt); 360x800: 19.57% (walk/prompt) |
+| HUD Compass Formatting | PASS | Replaced broad `.compass span` rule with `.compass>span:first-child`, eliminating 7px box constraint and text rotation glitch |
+| Realm Crumb Metadata | PASS | Dynamic domain & chapter title strings populated across all 6 realms |
+| Frame Timing | PASS (host measurement) | 89 samples: 16.67 ms mean, 16.70 ms p50, 16.70 ms p95, 16.80 ms max (steady 60 FPS equivalent) |
+| Resource Bounds Across 6 Realms | PASS | Calls 637–869, triangles 32,944–53,944, geometries 8, textures 2–9; disposed on transition |
+| All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
+
 ## Quality debt
 
 - **QD-01 / Repaid:** Official Three.js r186 is integrated and exercised under software WebGL.

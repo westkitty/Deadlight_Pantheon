@@ -1,5 +1,7 @@
 # Deadlight Pantheon progress
 
+Original prompt: Deadlight Pantheon — the world and titans especially need to look more like the reference clip.
+
 ## 2026-10-27 bootstrap baseline
 
 - Authoritative project extracted from `Deadlight_Pantheon_Codex_Handoff_2026-10-27.zip`.
@@ -37,3 +39,14 @@
 - Enabled workflow-based GitHub Pages. Run `40480556718` passed its build and deploy jobs against the exact release commit.
 - Public endpoint returned HTTP 200 and byte-for-byte matched committed `index.html` at SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c`.
 - Public-browser observation passed for the title screen, Enter Vespera transition and rendered Vespera/Malach Vex realm.
+
+## 2026-10-27 reference-fidelity pass & exploration polish
+
+- Reference comparison found that central roof beams and realm rings obscured the titans, while the film consistently uses an open Gothic nave, firelit floor, crystalline upper silhouette and dominant centered god.
+- Rebuilt the shared nave framing to keep the center sightline open, strengthen warm/cyan source colors and expose the embedded reference environment behind the 3D geometry.
+- Enlarged and moved the procedural titans into the primary composition; rebuilt their armor, luminous ribs, masks, crystal coronae, shoulder plates, arms and claws around the six chapter reference stills.
+- Retained Iona's city-body and Azrath's electric birth-event as their source-specific silhouettes.
+- Established first-person view as the default (`APP.view='first'`), removing third-person traveler obstruction and offering direct monumental immersion. Third-person remains switchable with V key or HUD icon.
+- Fixed compass HUD layout glitch where `.compass span` applied a 7px cyan square constraint to `#dist-text`, rotating and clipping distance text in the bottom right corner. Changed selector to `.compass>span:first-child`.
+- Made realm crumb display dynamic across all 6 realms (`${BOOK[i].domain} / DEADLIGHT ${BOOK[i].num}`).
+- Ran full browser verification suite (`tests/smoke.py`) via Google Chrome: all 6 realms, all 18 events, 3 endings, context loss/restoration, bounded resources, 60 FPS host frame timing, and strict < 20% HUD occupancy across all 4 viewports passed with 0 errors.

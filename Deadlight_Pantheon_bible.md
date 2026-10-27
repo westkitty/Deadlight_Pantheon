@@ -26,3 +26,10 @@
 - Fresh Chrome evidence covers a non-empty live Three.js canvas, all six structural realms, 18 witnesses, three endings, mobile overflow, zero requests and successful context restoration under software WebGL.
 - Remaining boundary: models are still source-informed procedural interpretations; physical GPU, touch, thermals, long-session persistence and human visual acceptance are not proved.
 - GitHub Pages workflow is prepared, but no upstream exists yet. Do not describe push, Pages deployment or live acceptance as complete until an explicit remote is confirmed and its workflow/URL are read back.
+
+## 2026-10-27 / Reference-Fidelity & Exploration Polish
+- First-person exploration established as default mode (`APP.view='first'`), eliminating third-person character obstruction and placing the viewer directly in the monumental Gothic nave. Third-person remains switchable via V key or HUD button.
+- Resolved compass distance HUD clipping bug by replacing broad `.compass span` selector with `.compass>span:first-child`, preventing distorted text rotation in the corner.
+- Dynamic realm metadata correctly updates `#location-label` and `#location` across all six chapters to reflect canonical domain names and chapter titles.
+- Shared Gothic nave architecture refined to maintain open axial sightlines to the six titans, matching the framing of the 2D film stills.
+- Automated browser suite verified with Google Chrome headless software WebGL: 60 FPS equivalent host frame time, bounded GPU resources across 6 realms, strict < 20% overlay union (5.17%–19.57%), all 18 testimonies, all 3 ending branches, and context loss recovery.

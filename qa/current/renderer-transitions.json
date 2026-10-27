@@ -2,48 +2,48 @@
   {
     "chapter": 0,
     "renderer": "Three.js r186",
-    "calls": 607,
-    "triangles": 33672,
+    "calls": 679,
+    "triangles": 37896,
     "geometries": 8,
-    "textures": 11
+    "textures": 9
   },
   {
     "chapter": 1,
     "renderer": "Three.js r186",
-    "calls": 625,
-    "triangles": 38544,
+    "calls": 698,
+    "triangles": 42368,
     "geometries": 8,
     "textures": 3
   },
   {
     "chapter": 2,
     "renderer": "Three.js r186",
-    "calls": 682,
-    "triangles": 31860,
+    "calls": 744,
+    "triangles": 38060,
     "geometries": 8,
     "textures": 3
   },
   {
     "chapter": 3,
     "renderer": "Three.js r186",
-    "calls": 643,
-    "triangles": 50128,
+    "calls": 717,
+    "triangles": 53944,
     "geometries": 8,
     "textures": 4
   },
   {
     "chapter": 4,
     "renderer": "Three.js r186",
-    "calls": 755,
-    "triangles": 26168,
+    "calls": 869,
+    "triangles": 32944,
     "geometries": 8,
     "textures": 2
   },
   {
     "chapter": 5,
     "renderer": "Three.js r186",
-    "calls": 524,
-    "triangles": 26644,
+    "calls": 637,
+    "triangles": 33924,
     "geometries": 8,
     "textures": 7
   }

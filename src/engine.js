@@ -33,7 +33,7 @@ function archPoint(){// gothic arch rib with two halves, as narrow cuboids assem
 return cube()}
 Object.assign(GEO,{cube:cube(),plane:plane(),sphere:sphere(),cyl:cylinder(),taper:cylinder('taper'),spike:cylinder('spike'),crystal:octa(),torus:torus()});
 function hexRGB(hex){const n=parseInt(hex.replace('#',''),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]}
-const MAT={stone:{c:'#283847',g:0},metal:{c:'#273444',g:0},dark:{c:'#101b27',g:0},obsidian:{c:'#142532',g:0},black:{c:'#050a12',g:0},bone:{c:'#cddde3',g:.12},bronze:{c:'#69523d',g:0},gold:{c:'#8e7962',g:0},blue:{c:'#54d2f4',g:1.25},ice:{c:'#9deaff',g:1.45},pale:{c:'#a6cddf',g:.5},red:{c:'#e95d62',g:1.2},flame:{c:'#ff9e46',g:1.3},smoke:{c:'#596376',g:0},softblue:{c:'#2e6b8b',g:.45},shadow:{c:'#060c13',g:0}};
+const MAT={stone:{c:'#334150',g:0},metal:{c:'#344050',g:.04},dark:{c:'#151a25',g:0},obsidian:{c:'#101a27',g:0},black:{c:'#03050a',g:0},bone:{c:'#dce7e8',g:.16},bronze:{c:'#8b5338',g:.04},gold:{c:'#c58b54',g:.08},blue:{c:'#42d9ff',g:1.55},ice:{c:'#a6f4ff',g:1.72},pale:{c:'#c8e7ef',g:.62},red:{c:'#ff5369',g:1.45},flame:{c:'#ff8a32',g:1.65},smoke:{c:'#667080',g:0},softblue:{c:'#296d96',g:.55},shadow:{c:'#050811',g:0}};
 function mkmat(c,g=0,a=1,texture=null){return{c,g,a,texture}}
 function material(spec){if(typeof spec==='string')return MAT[spec]||{c:spec,g:0,a:1};return spec}
 function ob(parent,type,mat,p,s,r){const n=new Node(GEO[type],material(mat));if(p)n.pos=p;if(s)n.scale=s;if(r)n.rot=r;parent.add(n);return n}
@@ -89,11 +89,15 @@ class GLWorld {
   this.renderer.setClearColor(0x000000,0);
   this.renderer.outputColorSpace=THREE.SRGBColorSpace;
   this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  this.renderer.toneMappingExposure=1.04;
-  this.ambient=new THREE.HemisphereLight(0xa8dfff,0x10131d,1.25);
-  this.key=new THREE.DirectionalLight(0xd7f4ff,2.15);
-  this.key.position.set(12,28,18);
-  this.scene.add(this.ambient,this.key);
+  this.renderer.toneMappingExposure=1.18;
+  this.ambient=new THREE.HemisphereLight(0xbcecff,0x1a0c12,1.55);
+  this.key=new THREE.DirectionalLight(0xffd6b8,2.8);
+  this.key.position.set(-12,24,20);
+  this.rim=new THREE.DirectionalLight(0x55dcff,3.4);
+  this.rim.position.set(14,20,-32);
+  this.fill=new THREE.DirectionalLight(0x7a65ff,1.25);
+  this.fill.position.set(-18,10,-18);
+  this.scene.add(this.ambient,this.key,this.rim,this.fill);
   this.visualRoot=null;
   this._mappedRoot=null;
   this._onResize=()=>this.resize();
