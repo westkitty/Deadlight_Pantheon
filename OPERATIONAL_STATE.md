@@ -25,7 +25,7 @@ Revision: 3 (2026-10-27; Three.js release candidate)
 ## Release scope
 - Preserve the authored world graph, `deadlight-v1` save schema, story, derived film plates and original Git history.
 - Replace only the live renderer boundary with pinned, locally bundled Three.js.
-- Keep remote creation distinct from local commit and Pages workflow preparation.
+- Keep remote creation, local commit, push, Pages deployment and browser acceptance as distinct states.
 
 ## Validation obligations
 - Embedded output exactly reconstructs from source with no runtime URLs.
@@ -50,4 +50,9 @@ Revision: 3 (2026-10-27; Three.js release candidate)
 - VERIFIED: exploration overlay union remained below 20% at 1920x1080, 1440x900, 390x844 and 360x800; measured range 4.73%–18.62%. Archive dialogs are explicitly labeled reading mode and pause the world.
 - VERIFIED: all six structural realm builds, all 18 witness paths, all three endings, source plates, choice-colored geometry, fallback, and successful Three.js context restoration pass.
 - PARTIAL: evidence is Chrome headless/software-WebGL, not a physical hardware-GPU or touch-device acceptance run.
-- PUBLICATION: Pages workflow prepared; no remote exists, so push, workflow execution, Pages URL and public acceptance are not yet verified.
+- COMMIT: release commit `67059dca263443b85fb5aade45551c484b7fcd3e` records the tested Three.js experience.
+- PUSH: local and GitHub `main` both resolved to `67059dca263443b85fb5aade45551c484b7fcd3e` after publication.
+- DEPLOYMENT: GitHub Pages workflow run `40480556718` completed successfully for that exact commit. The public endpoint is `https://westkitty.github.io/Deadlight_Pantheon/`.
+- LIVE ARTIFACT: the public endpoint returned HTTP 200 and its 2,669,131-byte HTML matched the committed `index.html` SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c` byte-for-byte.
+- BROWSER OBSERVATION: the public title screen and Vespera/Malach Vex Three.js realm rendered in the in-app browser and accepted the Enter Vespera action.
+- UNVERIFIED: no physical hardware-GPU, physical touch-device, long-session, or human acceptance claim is made.

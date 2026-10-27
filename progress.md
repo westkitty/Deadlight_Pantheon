@@ -11,13 +11,14 @@
 - `python3 tests/smoke.py` is BLOCKED before execution: `ModuleNotFoundError: No module named 'playwright'`.
 - Governing mission gap: current renderer is custom WebGL, not locally bundled Three.js; live GPU and physical touch proof remain unverified.
 
-## Current objective
+## Current publication state
 
-- Inspect the existing artifact and source-video references.
-- Close feasible master-mission gaps without discarding the packaged uplift.
-- Rebuild and verify the standalone offline artifact.
-- Stage and commit an explicit allowlist only after checks pass.
-- Push and enable GitHub Pages only against a confirmed writable upstream; no remote currently exists.
+- Authoritative repository: `https://github.com/westkitty/Deadlight_Pantheon` (public).
+- Public build: `https://westkitty.github.io/Deadlight_Pantheon/`.
+- Release commit `67059dca263443b85fb5aade45551c484b7fcd3e` was pushed to `origin/main` after the source and browser checks passed.
+- Pages run `40480556718` completed successfully for the release commit.
+- The live 2,669,131-byte artifact matched the committed artifact SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c`.
+- The public title screen and first live Three.js realm were visually observed in the in-app browser. Physical-device and human acceptance remain separate and unverified.
 
 ## 2026-10-27 Three.js release candidate
 
@@ -27,4 +28,12 @@
 - Browser suite PASS: live Three.js r186 (606 calls, 33,664 triangles, 8 geometries, 11 textures), 16.67 ms mean/p95 host frame time, six finite/live realm transitions, 18 witness paths, three endings, context restoration, mobile layout and zero requests.
 - Required overlay viewports PASS: 4.73%–18.62% in walking and interaction-prompt states.
 - Supplied movement harness PASS on actual `file://`; player moved across both iterations, state remained coherent, no error file emitted.
-- Added GitHub Pages workflow using current official action majors. No matching repository exists under authenticated account `westkitty`; remote creation remains unresolved.
+- Added GitHub Pages workflow using current official action majors.
+
+## 2026-10-27 public release
+
+- Created public GitHub repository `westkitty/Deadlight_Pantheon` and configured `origin` over SSH.
+- Pushed tested release commit `67059dca263443b85fb5aade45551c484b7fcd3e`; remote ref readback matched.
+- Enabled workflow-based GitHub Pages. Run `40480556718` passed its build and deploy jobs against the exact release commit.
+- Public endpoint returned HTTP 200 and byte-for-byte matched committed `index.html` at SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c`.
+- Public-browser observation passed for the title screen, Enter Vespera transition and rendered Vespera/Malach Vex realm.

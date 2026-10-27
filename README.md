@@ -2,6 +2,8 @@
 
 A self-contained, offline, dark-fantasy interactive fiction experience with six explorable 3D realms and 18 sequential witness memories.
 
+[Play the live build](https://westkitty.github.io/Deadlight_Pantheon/) · [View the source](https://github.com/westkitty/Deadlight_Pantheon)
+
 ## Start
 
 Open `index.html` in a browser with WebGL support. It embeds the official Three.js r186 runtime and does not require a server, network connection, fonts, trackers or CDN scripts. In browsers without WebGL, the six-character visual-story atlas remains playable, including all 18 decisions and all endings.
@@ -47,6 +49,6 @@ See `QUALITY_REPORT.md` and `OPERATIONAL_STATE.md` for evidence and remaining de
 
 ## Repository and Pages
 
-The Git history preserves the original commit `9dc9ea186499db22a2d65bda7a66e2928d22d03b`. `.github/workflows/pages.yml` rebuilds the standalone artifact, verifies that it is committed deterministically, checks every authored JavaScript module, and deploys only `index.html` to GitHub Pages. Remote creation and publication are separate from local verification; inspect `git remote -v`, the workflow run, and the resulting Pages URL for current publication truth.
+The Git history preserves the original commit `9dc9ea186499db22a2d65bda7a66e2928d22d03b`. `.github/workflows/pages.yml` rebuilds the standalone artifact, verifies that it is committed deterministically, checks every authored JavaScript module, and deploys only `index.html` to GitHub Pages. Release commit `67059dca263443b85fb5aade45551c484b7fcd3e` passed [workflow run 40480556718](https://github.com/westkitty/Deadlight_Pantheon/actions/runs/40480556718); its public artifact matched the committed file at SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c`.
 
 Stinky Weasel Productions · October 2026

@@ -12,7 +12,7 @@
 
 | Requirement | State | Evidence |
 |---|---|---|
-| Offline standalone file | PASS | 1.9 MB embedded HTML; browser smoke captured zero network requests |
+| Offline standalone file | PASS | 2,669,131-byte embedded HTML; browser smoke captured zero network requests |
 | Six scene graphs | PASS (structural) | 1,118–1,610 nodes each, finite transforms, three altars and titan each; all six have different node counts |
 | Distinct memory plates | PASS | 18 JPEG files and manifest; rendered in scene dialogs; scene images differ from chapter stills |
 | Narrative path and gating | PASS | All 18 choices; blocked future memory; chapter six premature gate returns to atlas |
@@ -41,6 +41,8 @@
 | All witness and ending routes | PASS | Browser suite covered strict ordering, 18 decisions, balanced/unbound/sealed endings and immutable recall |
 | Context recovery | PASS (test host) | Synthetic loss entered fallback and restoration recreated Three.js r186 |
 | Runtime network isolation | PASS | Browser suite recorded zero requests from embedded artifact |
+| GitHub Pages publication | PASS | Workflow run `40480556718` succeeded for release commit `67059dc`; HTTP 200 artifact matched committed SHA-256 `580a1410b381088897c21111a4ed1549d7176167f105718ac0d90d01c3fd0e3c` |
+| Public browser render | PASS (observed scope) | Public title screen and Vespera/Malach Vex Three.js realm rendered; Enter Vespera interaction succeeded |
 | Physical hardware acceptance | UNVERIFIED | No desktop hardware-GPU profiling or physical touch/thermal run |
 
 ## Quality debt
@@ -57,4 +59,4 @@ Static authoring audit: **PASS_WITH_REVIEW**. The single canon line “I fixed t
 
 ## Scope and delivery
 
-Three.js is pinned and embedded; there are no runtime external resources. The original commit and film-derived source assets are preserved. **Quality verdict:** VERIFIED for the tested offline software-WebGL and narrative scope; PARTIAL for physical hardware, exact 3D likeness, publication and human acceptance.
+Three.js is pinned and embedded; there are no runtime external resources. The original commit and film-derived source assets are preserved. **Quality verdict:** VERIFIED for the tested offline software-WebGL, narrative and GitHub Pages publication scope; PARTIAL for physical hardware, exact 3D likeness and human acceptance.
