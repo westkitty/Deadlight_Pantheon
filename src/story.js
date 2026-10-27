@@ -52,5 +52,9 @@ const BOOK=[
 const saved={version:1,events:{},decisions:{},chapter:0};
 try{const s=JSON.parse(localStorage.getItem('deadlight-v1')||'null');if(s&&s.version===1){saved.events=s.events||{};saved.decisions=s.decisions||{};saved.chapter=Math.max(0,Math.min(5,s.chapter||0))}}catch(e){}
 function persist(){try{localStorage.setItem('deadlight-v1',JSON.stringify(saved))}catch(e){}}
-const APP={chapter:saved.chapter,view:'third',quality:'high',motion:!window.matchMedia('(prefers-reduced-motion: reduce)').matches,started:false,dialog:false,sound:false,stage:null,near:null,clock:0};
+const APP={chapter:saved.chapter,view:'third',quality:window.matchMedia('(pointer:coarse)').matches?'low':'high',motion:!window.matchMedia('(prefers-reduced-motion: reduce)').matches,started:false,dialog:false,sound:false,stage:null,near:null,clock:0};
 const REFERENCES={__EMBED_STILLS__};
+const ECHO_PLATES={__EMBED_ECHOS__};
+const ECHO_TIMES=__EMBED_ECHO_TIMES__;
+function sceneImage(index,stage){return ECHO_PLATES[BOOK[index].ref+'-'+stage]||REFERENCES[BOOK[index].ref]}
+function witnessBalance(){let unbound=0,sealed=0;for(const [key,decision] of Object.entries(saved.decisions)){if(saved.events[key]){if(decision===0)unbound++;if(decision===1)sealed++;}}return{unbound,sealed};}

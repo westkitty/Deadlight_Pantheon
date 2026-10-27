@@ -1,41 +1,52 @@
-# THE DEADLIGHT PANTHEON — A Walkable Atlas
+# THE DEADLIGHT PANTHEON — A Walkable Three.js Atlas
 
-A self-contained offline HTML adventure inspired by the six titan manifestations in the supplied 30-second video.
+A self-contained, offline, dark-fantasy interactive fiction experience with six explorable 3D realms and 18 sequential witness memories.
 
-## Launch
+## Start
 
-Open `index.html` in a modern desktop or mobile browser with WebGL support. No server, network or installation is needed. The entire gallery, source frames, narrative and rendering code is embedded.
+Open `index.html` in a browser with WebGL support. It embeds the official Three.js r186 runtime and does not require a server, network connection, fonts, trackers or CDN scripts. In browsers without WebGL, the six-character visual-story atlas remains playable, including all 18 decisions and all endings.
 
-Use **WASD/arrow keys** to walk, **Shift** to sprint, **drag** to look around, **E/F** to examine memory beacons, **M** for the six-realm atlas, **C** for the current titan dossier and **V** to toggle first/third person. On a touchscreen, use the virtual joystick, RUN and WITNESS. There is a chapter selector and three clickable memory markers in each realm. All six chapters can be selected directly.
+**Desktop:** WASD or arrow keys to walk; Shift to run; mouse drag to look; E/F to witness; M for atlas; C for dossiers; V to change camera; Escape to close an open panel. Read the directional waypoint and approach the three reliquaries in each domain. The portal advances to the next realm after all three testimonies are heard. All six domains are selectable in any order.
 
-Each of the six worlds has three memory events (18 in total), short branching witness responses, local progress, a concluding scene and a JSON testimony export. Audio is opt-in and synthesized locally.
+**Touch:** Virtual movement joystick, drag to look, WITNESS and RUN controls. A battery-saving graphics setting is the default on coarse-pointer devices; visual quality and motion can be changed in the field guide. The story can also be explored without WebGL using the static source-film gallery.
 
-## Asset and runtime status — important
+## Experience and story
 
-- **WebGL, not the official Three.js library.** The standalone viewer includes a custom, small WebGL scene graph and renderer because a distributable Three.js bundle could not be obtained in the execution environment. It does not claim to be a Three.js implementation.
-- **Procedural interpretations, not exact original meshes.** 3D characters recreate visible traits from the film (X-eyed luminous mask, jagged crystal crown, skull/scream mask, black armored claws, ribcage, circular waveform heart, red eclipse horns, city-giant and electrical singularity). Precise scene meshes, rigs and geometry were not present in the video and cannot be recovered from it as-is. Embedded source-video frames let viewers compare the original compositions.
-- **Real 3D GPU playback is not independently verified in this test environment.** Its headless Chromium disallows WebGL entirely. When a browser similarly blocks WebGL, the document displays an accessible fallback with original source frames, biographies and every story choice instead of a blank canvas.
-- **Offline property:** no third-party runtime dependencies, fonts, remote assets, trackers or CDN calls. Embedded image data increases the HTML size to ~1.3 MB.
+- Six distinct environments, each with a source-inspired titan and unique architectural identity: resurrection festival, motionless basilica, eclipse court, city of bells, living-memory city and fractured future.
+- 18 source-video witness frames, one per event, plus six original chapter plates from the same film.
+- 18 choices stored with their consequences; an in-world monument changes to turquoise or amber according to its recorded memory. Recorded decisions can be recalled but not overwritten by replay.
+- Three possible conclusions. The last gate **requires all 18 memories**, even if chapter six is completed first.
+- In-world waypoint compass, optional first-person or third-person camera, opt-in synthesized drone, reduced-motion control, and local testimony JSON export.
+- Resilient fallback when WebGL is missing or lost; a restoration attempt is made when the browser signals that GPU context has returned.
 
-## Test evidence
+## Visual source boundaries
 
-- JavaScript parse check: PASS (`node --check`).
-- Six procedural scene construction and animation passes with no NaN transforms: PASS.
-- All 18 story events, choices, chapter selection, ending and testimony JSON export through browser fallback: PASS.
-- Mobile controls/navigation and 390px layout: PASS; no horizontal overflow or unhandled JavaScript errors during the tested paths.
-- Live WebGL rendering / accurate mobile frame rate: UNVERIFIED due test browser restrictions.
-- Browser localStorage restore after restarting: UNVERIFIED; local storage writes are coded with graceful failure handling and testimony JSON can be exported.
+The film is an authored reference. The video does **not** contain source meshes, rigging or a multi-view 3D scan. Titan bodies are original procedural **interpretations** of the visible mask expressions, horns, crowns, claws, cores, armor and city-scale silhouettes. They are not exact extracted or approved 3D models. The added memory plates are frames extracted from the original film at the times recorded in `src/assets/echo_manifest.json`.
 
-## Source layout
+**Runtime:** official `three@0.186.1`, locally vendored and embedded into the standalone artifact. The world remains an evidence-grounded procedural interpretation; exact-likeness mesh reconstruction still requires source models or multi-view reference material that the film does not contain.
 
-- `src/story.js` — six bios, events, dialogue and save schema
-- `src/engine.js` — custom offline WebGL renderer, procedural geometry and mask textures
-- `src/world.js` — six domains, characters, props, three event monuments per domain
-- `src/app.js` — movement, navigation, interface, choice progression and export
-- `src/index.template.html` — embedded layout and styling
-- `src/assets/` — six visual-source video stills
-- `src/build.py` — reconstructs `index.html` entirely offline
+## Build (no package manager)
 
-To rebuild on a system with Python 3: `python3 src/build.py`. You may replace this engine with an official vendored Three.js release if strict library compatibility is required; doing so requires a separate migration and GPU QA pass.
+```bash
+python3 src/build.py
+```
 
-Stinky Weasel Productions · Source media supplied by user · October 2026
+`src/build.py` combines the pinned Three.js runtime, authored JavaScript, HTML/CSS, six reference stills and 18 event frames into `index.html`, without runtime network dependencies. The artifact is approximately 2.7 MB. Keep `src/vendor`, `src/assets/echo_manifest.json` and its extracted frames together to rebuild.
+
+## Test
+
+The optional browser-smoke suite requires Python Playwright and a Chromium-family browser. It loads the standalone HTML directly, without a server or network, and exercises all 18 scenes and story paths.
+
+```bash
+python3 tests/smoke.py
+```
+
+The current Chromium run exercised a live software-WebGL context. **Verified:** official Three.js r186 rendering; six finite and distinct constructed scene graphs; actual movement through the `file://` artifact; all 18 narrative paths and visual plates; chapter reordering and conclusion gate; in-world choice colors; all three ending variants; modal keyboard behavior; tablet/phone-width static gallery; no runtime network requests; and WebGL loss/fallback/restoration. **Unverified:** sustained performance and touch behavior on physical devices, hardware-GPU behavior, and long-session reliability. Do not upgrade those facts to proof.
+
+See `QUALITY_REPORT.md` and `OPERATIONAL_STATE.md` for evidence and remaining debt.
+
+## Repository and Pages
+
+The Git history preserves the original commit `9dc9ea186499db22a2d65bda7a66e2928d22d03b`. `.github/workflows/pages.yml` rebuilds the standalone artifact, verifies that it is committed deterministically, checks every authored JavaScript module, and deploys only `index.html` to GitHub Pages. Remote creation and publication are separate from local verification; inspect `git remote -v`, the workflow run, and the resulting Pages URL for current publication truth.
+
+Stinky Weasel Productions · October 2026

@@ -1,4 +1,4 @@
-// Small purpose-built WebGL renderer. No network, dynamic imports, external scripts or asset requests.
+
 const V=(x=0,y=0,z=0)=>[x,y,z];
 const add3=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
 const sub3=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
@@ -53,8 +53,8 @@ function makeMask(kind){const c=document.createElement('canvas');c.width=c.heigh
  if(kind==='thaum'){glow();x.strokeStyle='#89f8ff';x.lineWidth=3;x.beginPath();x.arc(128,126,85,0,6.28);x.stroke();for(let i=0;i<60;i++){const a=i/60*6.283,r=70+Math.sin(i*3)*15;const p=[128+Math.cos(a)*r,128+Math.sin(a)*r];dot(...p,'#a4f5ff',2)}for(let i=0;i<58;i++){let t=i/57,amp=(.1+Math.pow(Math.abs(Math.sin(i*2.7)),6)*.6)*78;stroke([25+i*3.6,128-amp/2],[25+i*3.6,128+amp/2],3,'#64e8ff')}x.shadowBlur=0}
  if(kind==='void'){glow();x.strokeStyle='#8feefa';x.lineWidth=3;for(let k=0;k<5;k++){x.beginPath();x.arc(128,128,25+k*18,0,6.283);x.stroke()}x.beginPath();x.moveTo(20,128);x.lineTo(236,128);x.moveTo(128,20);x.lineTo(128,236);x.stroke();x.shadowBlur=0}
  return c}
-class GLWorld{
- constructor(canvas){this.canvas=canvas;this.gl=canvas.getContext('webgl2',{alpha:true,antialias:true,powerPreference:'default'})||canvas.getContext('webgl',{alpha:true,antialias:true});if(!this.gl)throw Error('WebGL not supported.');this.root=new Node();this.program=this.compile();this.u={};const gl=this.gl;for(const n of ['uPV','uModel','uColor','uGlow','uAlpha','uUseTex','uSampler','uEye','uFog','uTime'])this.u[n]=gl.getUniformLocation(this.program,n);this.a={pos:gl.getAttribLocation(this.program,'aPos'),normal:gl.getAttribLocation(this.program,'aNormal'),uv:gl.getAttribLocation(this.program,'aUV')};this.texCache=new Map();this.worldTime=0;this.cameraEye=[0,5,20];this.cameraAt=[0,3,0];this.objects=[];gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);this.resize();window.addEventListener('resize',()=>this.resize());}
+class LegacyGLWorld{
+ constructor(canvas){this.canvas=canvas;this.gl=canvas.getContext('webgl2',{alpha:true,antialias:true,powerPreference:'default'})||canvas.getContext('webgl',{alpha:true,antialias:true});if(!this.gl)throw Error('WebGL not supported.');this.root=new Node();this.program=this.compile();this.u={};const gl=this.gl;for(const n of ['uPV','uModel','uColor','uGlow','uAlpha','uUseTex','uSampler','uEye','uFog','uTime'])this.u[n]=gl.getUniformLocation(this.program,n);this.a={pos:gl.getAttribLocation(this.program,'aPos'),normal:gl.getAttribLocation(this.program,'aNormal'),uv:gl.getAttribLocation(this.program,'aUV')};this.texCache=new Map();this.worldTime=0;this.cameraEye=[0,5,20];this.cameraAt=[0,3,0];this.objects=[];gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);this._onResize=()=>this.resize();this.resize();window.addEventListener('resize',this._onResize);}
  compile(){const gl=this.gl;const vs=`attribute vec3 aPos;attribute vec3 aNormal;attribute vec2 aUV;uniform mat4 uPV;uniform mat4 uModel;uniform vec3 uEye;varying vec3 vNormal;varying vec2 vUV;varying float vDist;varying vec3 vWorld;void main(){vec4 w=uModel*vec4(aPos,1.);vWorld=w.xyz;vNormal=normalize(mat3(uModel)*aNormal);vUV=aUV;vDist=distance(w.xyz,uEye);gl_Position=uPV*w;}`;
  const fs=`precision mediump float;uniform vec3 uColor;uniform float uGlow;uniform float uAlpha;uniform float uUseTex;uniform sampler2D uSampler;uniform vec3 uFog;uniform float uTime;varying vec3 vNormal;varying vec2 vUV;varying float vDist;varying vec3 vWorld;void main(){vec3 n=normalize(vNormal);float light=.30+.65*max(dot(n,normalize(vec3(.42,.8,.55))),0.);float edge=.22*pow(1.-abs(dot(n,vec3(0.,0.,1.))),2.);vec3 base=uColor;float a=uAlpha;if(uUseTex>.5){vec4 tex=texture2D(uSampler,vUV);base=mix(base,tex.rgb,tex.a);a*=tex.a;}vec3 col=base*(light+edge+uGlow*1.25);float fog=smoothstep(42.,124.,vDist);col=mix(col,uFog,fog*(uGlow>.5?.49:.91));gl_FragColor=vec4(col,a);}`;
  const sh=(type,str)=>{const s=gl.createShader(type);gl.shaderSource(s,str);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s};const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,vs));gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
@@ -63,5 +63,169 @@ class GLWorld{
  texture(canvas){if(this.texCache.has(canvas))return this.texCache.get(canvas);const gl=this.gl,texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,canvas);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);this.texCache.set(canvas,texture);return texture}
  render(eye,at,ambient,time){this.resize();const gl=this.gl;gl.viewport(0,0,this.canvas.width,this.canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(this.program);let pv=mm(perspective(1.12,this.canvas.width/this.canvas.height,.1,220),lookAt(eye,at));gl.uniformMatrix4fv(this.u.uPV,false,pv);gl.uniform3fv(this.u.uEye,eye);gl.uniform3fv(this.u.uFog,ambient);gl.uniform1f(this.u.uTime,time);this.objects.length=0;const walk=(n,p)=>{if(!n.visible)return;const m=mm(p,localMatrix(n));if(n.geo&&n.mat)this.objects.push({n,m,dist:len3(sub3([m[12],m[13],m[14]],eye))});for(const c of n.children)walk(c,m)};walk(this.root,id4());const opaque=[],trans=[];for(const o of this.objects){let a=o.n.mat.a===undefined?1:o.n.mat.a;(a<1?trans:opaque).push(o)}trans.sort((a,b)=>b.dist-a.dist);gl.depthMask(true);for(const o of opaque)this.draw(o);gl.depthMask(false);for(const o of trans)this.draw(o);gl.depthMask(true)}
  draw({n,m}){const gl=this.gl,b=this.buffer(n.geo),mat=n.mat;gl.bindBuffer(gl.ARRAY_BUFFER,b.vb);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,b.ib);gl.enableVertexAttribArray(this.a.pos);gl.enableVertexAttribArray(this.a.normal);gl.enableVertexAttribArray(this.a.uv);gl.vertexAttribPointer(this.a.pos,3,gl.FLOAT,false,32,0);gl.vertexAttribPointer(this.a.normal,3,gl.FLOAT,false,32,12);gl.vertexAttribPointer(this.a.uv,2,gl.FLOAT,false,32,24);gl.uniformMatrix4fv(this.u.uModel,false,m);gl.uniform3fv(this.u.uColor,hexRGB(mat.c));gl.uniform1f(this.u.uGlow,mat.g||0);gl.uniform1f(this.u.uAlpha,mat.a===undefined?1:mat.a);gl.uniform1f(this.u.uUseTex,mat.texture?1:0);if(mat.texture){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.texture(mat.texture));gl.uniform1i(this.u.uSampler,0)}gl.drawElements(gl.TRIANGLES,b.count,gl.UNSIGNED_SHORT,0)}
- dispose(){const gl=this.gl;for(const g of Object.values(GEO)){if(g.gpu){gl.deleteBuffer(g.gpu.vb);gl.deleteBuffer(g.gpu.ib);g.gpu=null}}for(const t of this.texCache.values())gl.deleteTexture(t);this.texCache.clear();if(this.program)gl.deleteProgram(this.program)}
+ releaseAfterLoss(){window.removeEventListener('resize',this._onResize);for(const g of Object.values(GEO))g.gpu=null;this.texCache.clear();}
+ dispose(){window.removeEventListener('resize',this._onResize);const gl=this.gl;for(const g of Object.values(GEO)){if(g.gpu){gl.deleteBuffer(g.gpu.vb);gl.deleteBuffer(g.gpu.ib);g.gpu=null}}for(const t of this.texCache.values())gl.deleteTexture(t);this.texCache.clear();if(this.program)gl.deleteProgram(this.program)}
+}
+
+// The authored Node graph above remains renderer-agnostic. This adapter is the
+// sole live renderer and maps that graph into the locally bundled Three.js runtime.
+class GLWorld {
+ constructor(canvas){
+  if(typeof THREE==='undefined'||!THREE.WebGLRenderer)throw Error('Bundled Three.js runtime is unavailable.');
+  this.canvas=canvas;
+  this.root=new Node();
+  this.texCache=new Map();
+  this.textureSet=new Set();
+  this.materialSet=new Set();
+  this.materialCache=new Map();
+  this.textureIds=new WeakMap();
+  this.nextTextureId=1;
+  this.geometryMap=new Map();
+  this.objectMap=new WeakMap();
+  this.scene=new THREE.Scene();
+  this.camera=new THREE.PerspectiveCamera(64,1,.1,220);
+  this.renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'default'});
+  this.gl=this.renderer.getContext();
+  this.renderer.setClearColor(0x000000,0);
+  this.renderer.outputColorSpace=THREE.SRGBColorSpace;
+  this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  this.renderer.toneMappingExposure=1.04;
+  this.ambient=new THREE.HemisphereLight(0xa8dfff,0x10131d,1.25);
+  this.key=new THREE.DirectionalLight(0xd7f4ff,2.15);
+  this.key.position.set(12,28,18);
+  this.scene.add(this.ambient,this.key);
+  this.visualRoot=null;
+  this._mappedRoot=null;
+  this._onResize=()=>this.resize();
+  window.addEventListener('resize',this._onResize);
+  this.resize();
+ }
+ reset(root){
+  this.disposeVisuals();
+  this.root=root;
+  this._mappedRoot=null;
+ }
+ makeGeometry(source){
+  if(this.geometryMap.has(source))return this.geometryMap.get(source);
+  const geometry=new THREE.BufferGeometry();
+  const interleaved=new THREE.InterleavedBuffer(source.verts,8);
+  geometry.setAttribute('position',new THREE.InterleavedBufferAttribute(interleaved,3,0));
+  geometry.setAttribute('normal',new THREE.InterleavedBufferAttribute(interleaved,3,3));
+  geometry.setAttribute('uv',new THREE.InterleavedBufferAttribute(interleaved,2,6));
+  geometry.setIndex(new THREE.BufferAttribute(source.inds,1));
+  geometry.computeBoundingSphere();
+  this.geometryMap.set(source,geometry);
+  return geometry;
+ }
+ makeTexture(source){
+  if(this.texCache.has(source))return this.texCache.get(source);
+  const texture=new THREE.CanvasTexture(source);
+  texture.colorSpace=THREE.SRGBColorSpace;
+  texture.wrapS=texture.wrapT=THREE.ClampToEdgeWrapping;
+  texture.minFilter=THREE.LinearFilter;
+  texture.magFilter=THREE.LinearFilter;
+  texture.needsUpdate=true;
+  this.texCache.set(source,texture);
+  this.textureSet.add(texture);
+  return texture;
+ }
+ materialKey(spec,plane=false){
+  const s=material(spec);let textureId=0;
+  if(s.texture){if(!this.textureIds.has(s.texture))this.textureIds.set(s.texture,this.nextTextureId++);textureId=this.textureIds.get(s.texture);}
+  return `${s.c}|${s.g||0}|${s.a===undefined?1:s.a}|${textureId}|${plane?1:0}`;
+ }
+ makeMaterial(spec,plane=false){
+  const s=material(spec),alpha=s.a===undefined?1:s.a;
+  const key=this.materialKey(s,plane);
+  if(this.materialCache.has(key))return this.materialCache.get(key);
+  const options={
+   color:new THREE.Color(s.c),
+   emissive:new THREE.Color(s.c),
+   emissiveIntensity:Math.max(0,s.g||0)*.58,
+   roughness:(s.g||0)>.8?.28:.72,
+   metalness:(s.g||0)>.8?.15:.42,
+   transparent:alpha<.999||!!s.texture,
+   opacity:alpha,
+   depthWrite:alpha>=.82,
+   side:plane?THREE.DoubleSide:THREE.FrontSide
+  };
+  if(s.texture){options.map=this.makeTexture(s.texture);options.emissiveMap=options.map;options.alphaTest=.015;}
+  const result=new THREE.MeshStandardMaterial(options);
+  this.materialCache.set(key,result);
+  this.materialSet.add(result);
+  return result;
+ }
+ mapNode(node){
+  const object=node.geo?new THREE.Mesh(this.makeGeometry(node.geo),this.makeMaterial(node.mat,node.geo===GEO.plane)):new THREE.Group();
+  object.matrixAutoUpdate=true;
+  object.frustumCulled=!!node.geo;
+  if(node.geo){const s=material(node.mat);object.userData.deadlightSpec=s;object.userData.deadlightAlpha=s.a===undefined?1:s.a;object.userData.deadlightShared=true;object.userData.deadlightKey=this.materialKey(s,node.geo===GEO.plane);}
+  this.objectMap.set(node,object);
+  for(const child of node.children)object.add(this.mapNode(child));
+  return object;
+ }
+ ensureMapped(){
+  if(this._mappedRoot===this.root&&this.visualRoot)return;
+  this.disposeVisuals();
+  this.visualRoot=this.mapNode(this.root);
+  this.scene.add(this.visualRoot);
+  this._mappedRoot=this.root;
+ }
+ syncMaterial(node,mesh){
+  const s=material(node.mat),alpha=s.a===undefined?1:s.a,key=this.materialKey(s,node.geo===GEO.plane),data=mesh.userData;
+  if(data.deadlightSpec!==s||data.deadlightKey!==key&&Math.abs(data.deadlightAlpha-alpha)<.002){
+   mesh.material=this.makeMaterial(s,node.geo===GEO.plane);
+   data.deadlightSpec=s;data.deadlightAlpha=alpha;data.deadlightShared=true;data.deadlightKey=key;
+   return;
+  }
+  if(Math.abs(data.deadlightAlpha-alpha)>.002){
+   if(data.deadlightShared){mesh.material=mesh.material.clone();this.materialSet.add(mesh.material);data.deadlightShared=false;}
+   const m=mesh.material;m.opacity=alpha;m.transparent=alpha<.999||!!s.texture;m.depthWrite=alpha>=.82;m.needsUpdate=true;data.deadlightAlpha=alpha;data.deadlightKey=key;
+  }
+ }
+ syncNode(node){
+  const object=this.objectMap.get(node);
+  if(!object)return;
+  object.position.set(node.pos[0],node.pos[1],node.pos[2]);
+  object.rotation.set(node.rot[0],node.rot[1],node.rot[2],'XYZ');
+  object.scale.set(node.scale[0],node.scale[1],node.scale[2]);
+  object.visible=node.visible;
+  if(node.geo)this.syncMaterial(node,object);
+  for(const child of node.children)this.syncNode(child);
+ }
+ resize(){
+  const dpr=APP.quality==='high'?Math.min(1.5,window.devicePixelRatio||1):Math.min(.9,window.devicePixelRatio||1);
+  const width=Math.max(1,this.canvas.clientWidth),height=Math.max(1,this.canvas.clientHeight);
+  if(this._width===width&&this._height===height&&this._dpr===dpr)return;
+  this._width=width;this._height=height;this._dpr=dpr;
+  this.renderer.setPixelRatio(dpr);
+  this.renderer.setSize(width,height,false);
+  this.camera.aspect=width/height;
+  this.camera.updateProjectionMatrix();
+ }
+ render(eye,at,ambient){
+  this.ensureMapped();
+  this.resize();
+  this.syncNode(this.root);
+  this.camera.position.set(eye[0],eye[1],eye[2]);
+  this.camera.lookAt(at[0],at[1],at[2]);
+  const fogColor=new THREE.Color(ambient[0],ambient[1],ambient[2]);
+  if(!this.scene.fog)this.scene.fog=new THREE.Fog(fogColor,42,124);else this.scene.fog.color.copy(fogColor);
+  this.renderer.render(this.scene,this.camera);
+ }
+ stats(){return{renderer:`Three.js r${THREE.REVISION}`,calls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,geometries:this.renderer.info.memory.geometries,textures:this.renderer.info.memory.textures};}
+ disposeVisuals(){
+  if(this.visualRoot){this.scene.remove(this.visualRoot);this.visualRoot=null;}
+  for(const value of this.materialSet)value.dispose();
+  for(const value of this.textureSet)value.dispose();
+  this.materialSet.clear();this.materialCache.clear();this.textureSet.clear();this.texCache.clear();this.textureIds=new WeakMap();this.nextTextureId=1;this.objectMap=new WeakMap();
+ }
+ releaseAfterLoss(){window.removeEventListener('resize',this._onResize);this.disposeVisuals();this.renderer.dispose();}
+ dispose(){
+  window.removeEventListener('resize',this._onResize);
+  this.disposeVisuals();
+  for(const value of this.geometryMap.values())value.dispose();
+  this.geometryMap.clear();
+  this.renderer.dispose();
+ }
 }

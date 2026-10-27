@@ -1,0 +1,12 @@
+[
+  {
+    "pattern": "I fixed",
+    "file": "^index\\.html$",
+    "reason": "Exact line is spoken by Malach Vex, a fictional character; it is not production or maker commentary."
+  },
+  {
+    "pattern": "[Cc]odex",
+    "file": "^index\\.html$",
+    "reason": "Codex labels the fictional in-world archive interface, not an AI coding product."
+  }
+]

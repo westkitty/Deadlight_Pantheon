@@ -1,0 +1,50 @@
+[
+  {
+    "chapter": 0,
+    "renderer": "Three.js r186",
+    "calls": 607,
+    "triangles": 33672,
+    "geometries": 8,
+    "textures": 11
+  },
+  {
+    "chapter": 1,
+    "renderer": "Three.js r186",
+    "calls": 625,
+    "triangles": 38544,
+    "geometries": 8,
+    "textures": 3
+  },
+  {
+    "chapter": 2,
+    "renderer": "Three.js r186",
+    "calls": 682,
+    "triangles": 31860,
+    "geometries": 8,
+    "textures": 3
+  },
+  {
+    "chapter": 3,
+    "renderer": "Three.js r186",
+    "calls": 643,
+    "triangles": 50128,
+    "geometries": 8,
+    "textures": 4
+  },
+  {
+    "chapter": 4,
+    "renderer": "Three.js r186",
+    "calls": 755,
+    "triangles": 26168,
+    "geometries": 8,
+    "textures": 2
+  },
+  {
+    "chapter": 5,
+    "renderer": "Three.js r186",
+    "calls": 524,
+    "triangles": 26644,
+    "geometries": 8,
+    "textures": 7
+  }
+]

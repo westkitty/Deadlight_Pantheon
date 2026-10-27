@@ -1,0 +1,42 @@
+[
+  {
+    "viewport": "1920x1080",
+    "state": "walking",
+    "percent": 4.73
+  },
+  {
+    "viewport": "1920x1080",
+    "state": "interaction-prompt",
+    "percent": 5.93
+  },
+  {
+    "viewport": "1440x900",
+    "state": "walking",
+    "percent": 9.48
+  },
+  {
+    "viewport": "1440x900",
+    "state": "interaction-prompt",
+    "percent": 9.48
+  },
+  {
+    "viewport": "390x844",
+    "state": "walking",
+    "percent": 16.29
+  },
+  {
+    "viewport": "390x844",
+    "state": "interaction-prompt",
+    "percent": 16.29
+  },
+  {
+    "viewport": "360x800",
+    "state": "walking",
+    "percent": 18.62
+  },
+  {
+    "viewport": "360x800",
+    "state": "interaction-prompt",
+    "percent": 18.62
+  }
+]
