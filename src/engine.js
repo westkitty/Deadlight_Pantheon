@@ -33,7 +33,7 @@ function archPoint(){// gothic arch rib with two halves, as narrow cuboids assem
 return cube()}
 Object.assign(GEO,{cube:cube(),plane:plane(),sphere:sphere(),cyl:cylinder(),taper:cylinder('taper'),spike:cylinder('spike'),crystal:octa(),torus:torus()});
 function hexRGB(hex){const n=parseInt(hex.replace('#',''),16);return[(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]}
-const MAT={stone:{c:'#334150',g:0},metal:{c:'#344050',g:.04},dark:{c:'#151a25',g:0},obsidian:{c:'#101a27',g:0},black:{c:'#03050a',g:0},bone:{c:'#dce7e8',g:.16},bronze:{c:'#8b5338',g:.04},gold:{c:'#c58b54',g:.08},blue:{c:'#42d9ff',g:1.55},ice:{c:'#a6f4ff',g:1.72},pale:{c:'#c8e7ef',g:.62},red:{c:'#ff5369',g:1.45},flame:{c:'#ff8a32',g:1.65},smoke:{c:'#667080',g:0},softblue:{c:'#296d96',g:.55},shadow:{c:'#050811',g:0}};
+const MAT={stone:{c:'#323f4e',g:0,r:.86,m:.08},metal:{c:'#3c4b5c',g:.04,r:.38,m:.76},dark:{c:'#141924',g:0,r:.24,m:.38},obsidian:{c:'#0f1724',g:0,r:.16,m:.45},black:{c:'#030508',g:0,r:.42,m:.2},bone:{c:'#d8e6e8',g:.16,r:.82,m:.05},bronze:{c:'#96583a',g:.04,r:.32,m:.84},gold:{c:'#d6985c',g:.08,r:.26,m:.90},blue:{c:'#3fe2ff',g:1.65,r:.22,m:.15},ice:{c:'#aef8ff',g:1.85,r:.18,m:.15},pale:{c:'#cceaf0',g:.65,r:.50,m:.24},red:{c:'#ff4d64',g:1.55,r:.24,m:.28},flame:{c:'#ff882e',g:1.85,r:.24,m:.12},smoke:{c:'#5d6676',g:0,r:.92,m:0},softblue:{c:'#2b75a3',g:.6,r:.38,m:.32},shadow:{c:'#04070e',g:0,r:.58,m:.12}};
 function mkmat(c,g=0,a=1,texture=null){return{c,g,a,texture}}
 function material(spec){if(typeof spec==='string')return MAT[spec]||{c:spec,g:0,a:1};return spec}
 function ob(parent,type,mat,p,s,r){const n=new Node(GEO[type],material(mat));if(p)n.pos=p;if(s)n.scale=s;if(r)n.rot=r;parent.add(n);return n}
@@ -136,18 +136,20 @@ class GLWorld {
  materialKey(spec,plane=false){
   const s=material(spec);let textureId=0;
   if(s.texture){if(!this.textureIds.has(s.texture))this.textureIds.set(s.texture,this.nextTextureId++);textureId=this.textureIds.get(s.texture);}
-  return `${s.c}|${s.g||0}|${s.a===undefined?1:s.a}|${textureId}|${plane?1:0}`;
+  return `${s.c}|${s.g||0}|${s.r||0}|${s.m||0}|${s.a===undefined?1:s.a}|${textureId}|${plane?1:0}`;
  }
  makeMaterial(spec,plane=false){
   const s=material(spec),alpha=s.a===undefined?1:s.a;
   const key=this.materialKey(s,plane);
   if(this.materialCache.has(key))return this.materialCache.get(key);
+  const roughness=s.r!==undefined?s.r:((s.g||0)>.8?.24:.72);
+  const metalness=s.m!==undefined?s.m:((s.g||0)>.8?.16:.42);
   const options={
    color:new THREE.Color(s.c),
    emissive:new THREE.Color(s.c),
    emissiveIntensity:Math.max(0,s.g||0)*.58,
-   roughness:(s.g||0)>.8?.28:.72,
-   metalness:(s.g||0)>.8?.15:.42,
+   roughness,
+   metalness,
    transparent:alpha<.999||!!s.texture,
    opacity:alpha,
    depthWrite:alpha>=.82,
@@ -207,14 +209,36 @@ class GLWorld {
   this.camera.aspect=width/height;
   this.camera.updateProjectionMatrix();
  }
- render(eye,at,ambient){
+ render(eye,at,ambient,time=0,world='cathedral'){
   this.ensureMapped();
   this.resize();
   this.syncNode(this.root);
   this.camera.position.set(eye[0],eye[1],eye[2]);
   this.camera.lookAt(at[0],at[1],at[2]);
   const fogColor=new THREE.Color(ambient[0],ambient[1],ambient[2]);
-  if(!this.scene.fog)this.scene.fog=new THREE.Fog(fogColor,42,124);else this.scene.fog.color.copy(fogColor);
+  const fogNear=world==='basilica'?36:world==='eclipse'?38:world==='city'?46:42;
+  const fogFar=world==='basilica'?114:world==='eclipse'?116:world==='city'?138:124;
+  if(!this.scene.fog)this.scene.fog=new THREE.Fog(fogColor,fogNear,fogFar);
+  else{this.scene.fog.color.copy(fogColor);this.scene.fog.near=fogNear;this.scene.fog.far=fogFar;}
+  if(world==='eclipse'){
+   this.rim.color.setHex(0xff3f56);this.key.color.setHex(0xff9e76);this.fill.color.setHex(0x5a1828);
+   this.ambient.color.setHex(0x351222);this.ambient.groundColor.setHex(0x18070e);
+  }else if(world==='basilica'){
+   this.rim.color.setHex(0xd0f4ff);this.key.color.setHex(0xe8f0f8);this.fill.color.setHex(0x655885);
+   this.ambient.color.setHex(0x28324a);this.ambient.groundColor.setHex(0x0e111a);
+  }else if(world==='bells'){
+   this.rim.color.setHex(0x5ae8ff);this.key.color.setHex(0xfad5a8);this.fill.color.setHex(0x384a6b);
+   this.ambient.color.setHex(0x1c3042);this.ambient.groundColor.setHex(0x0f151c);
+  }else if(world==='city'){
+   this.rim.color.setHex(0x68ecff);this.key.color.setHex(0xd5f3ff);this.fill.color.setHex(0x426285);
+   this.ambient.color.setHex(0x1c3c52);this.ambient.groundColor.setHex(0x0d1822);
+  }else if(world==='void'){
+   this.rim.color.setHex(0x8ef8ff);this.key.color.setHex(0xdaf8ff);this.fill.color.setHex(0x683d95);
+   this.ambient.color.setHex(0x142038);this.ambient.groundColor.setHex(0x080c18);
+  }else{
+   this.rim.color.setHex(0x4de0ff);this.key.color.setHex(0xffcb9a);this.fill.color.setHex(0x6855b8);
+   this.ambient.color.setHex(0x1b3447);this.ambient.groundColor.setHex(0x0b141d);
+  }
   this.renderer.render(this.scene,this.camera);
  }
  stats(){return{renderer:`Three.js r${THREE.REVISION}`,calls:this.renderer.info.render.calls,triangles:this.renderer.info.render.triangles,geometries:this.renderer.info.memory.geometries,textures:this.renderer.info.memory.textures};}

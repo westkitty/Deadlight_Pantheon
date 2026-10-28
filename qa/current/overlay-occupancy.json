@@ -2,41 +2,41 @@
   {
     "viewport": "1920x1080",
     "state": "walking",
-    "percent": 5.17
+    "percent": 5.46
   },
   {
     "viewport": "1920x1080",
     "state": "interaction-prompt",
-    "percent": 6.37
+    "percent": 6.6
   },
   {
     "viewport": "1440x900",
     "state": "walking",
-    "percent": 10.19
+    "percent": 10.55
   },
   {
     "viewport": "1440x900",
     "state": "interaction-prompt",
-    "percent": 10.19
+    "percent": 10.55
   },
   {
     "viewport": "390x844",
     "state": "walking",
-    "percent": 17.12
+    "percent": 16.18
   },
   {
     "viewport": "390x844",
     "state": "interaction-prompt",
-    "percent": 17.12
+    "percent": 16.18
   },
   {
     "viewport": "360x800",
     "state": "walking",
-    "percent": 19.57
+    "percent": 18.49
   },
   {
     "viewport": "360x800",
     "state": "interaction-prompt",
-    "percent": 19.57
+    "percent": 18.49
   }
 ]

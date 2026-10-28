@@ -2,8 +2,8 @@
   {
     "chapter": 0,
     "renderer": "Three.js r186",
-    "calls": 679,
-    "triangles": 37896,
+    "calls": 680,
+    "triangles": 37904,
     "geometries": 8,
     "textures": 9
   },

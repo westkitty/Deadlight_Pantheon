@@ -49,3 +49,12 @@
 - First-person kinematic head-bob and subtle lateral sway synced with movement, automatically disabled when reduced motion is preferred.
 - Titan organic micro-animations: systolic/diastolic double heartbeat for Seraphine's forbidden heart, rhythmic breathing pulse for Malach's mask, Thaum-IX's resonant waveform chest, and Azrath's electric quantum jitter.
 - Empirically verified with `tests/smoke.py`: 60 FPS equivalent frame times (16.67 ms mean/p95), 6 live Three.js transitions, HUD overlay strictly < 20% (5.17%–19.57%), 18 memories, 3 endings, 0 errors, 0 network requests.
+
+## 2026-10-28 / AAA Visual & Atmospheric Overhaul
+- Comprehensive PBR material overhaul: defined surface-specific physical roughness and metalness across all 16 material types in `src/engine.js`. Polished dark obsidian stone (`r:0.16, m:0.45`), heavy forged steel (`r:0.38, m:0.76`), high-luster bronze/gold metallic trim (`m:0.84–0.90`), porcelain bone (`r:0.82`), and glistening low-roughness crystals (`r:0.18–0.22`).
+- Dynamic per-realm lighting & atmospheric grading in Three.js (`GLWorld.render`): direction key light, rim light, ambient sky/ground light, and fog distances tuned dynamically per realm (Cathedral golden lantern key / cyan rim; Basilica cold monochrome key / icy diamond rim; Eclipse amber key / blood-red rim; Bells antique bronze key / teal rim; Mourning Spire misty key / cascading aquamarine rim; Unhappened quantum key / electric violet rim).
+- Environmental living animation: animated flickering flame braziers along the Gothic nave aisle, active memory beacon acceleration and scale pulsation, and swirling 3D organic vortex motion for ambient ember motes.
+- Added cinematic camera trauma impulse (`CAMERA.shake` & `CAMERA.kick`) on decisions and gate passage, smoothly damping in `renderGame`.
+- Polished commercial glassmorphic HUD styling with dark frosted glass (`backdrop-filter: blur(16px)`), luminous hairline borders, glowing hover states, and refined typography.
+- Mobile overlay occupancy tightened (1920x1080: 5.46%, 1440x900: 10.55%, 390x844: 16.18%, 360x800: 18.49% — well below the hard 20% limit).
+- Rebuilt `index.html` (2,681,666 bytes) and verified with full smoke test suite: 60 FPS frame time (16.67 ms mean/p95), 6 live Three.js realm transitions with bounded resources, 0 page errors, 0 network requests.

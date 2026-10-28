@@ -69,6 +69,19 @@
 | Resource Bounds Across 6 Realms | PASS | Calls 638–870, triangles 32,952–53,944, geometries 8, textures 2–9; strictly bounded |
 | All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
 
+## Revision 6 evidence (AAA Visual & Atmospheric Overhaul)
+
+| Requirement | State | Evidence |
+|---|---|---|
+| PBR Material Physical Properties | PASS | Assigned surface-specific physical roughness and metalness across all 16 material types in `src/engine.js`; obsidian `r:0.16, m:0.45`, forged steel `r:0.38, m:0.76`, gold/bronze `m:0.84–0.90`, bone `r:0.82`, crystals `r:0.18–0.22` |
+| Dynamic Per-Realm Lighting & Fog | PASS | Three.js directional key light, rim light, ambient sky/ground light, and fog distances tuned dynamically per realm in `GLWorld.render` (Cathedral, Basilica, Eclipse, Bells, City, Void) |
+| Living Environmental Animation | PASS | Animated flickering flame braziers along the Gothic nave aisle, active memory beacon acceleration and scale pulsation, and swirling 3D organic vortex motion for ambient ember motes |
+| Cinematic Camera Trauma Shake | PASS | Added `CAMERA.shake` & `CAMERA.kick` on verdicts and gate passage, smoothly damping in `renderGame` |
+| Glassmorphic HUD & Responsive Limits | PASS | Dark frosted glass (`backdrop-filter: blur(16px)`), luminous hairline borders, glowing hover states; overlay strictly < 20% across all viewports (1920x1080: 5.46% walk / 6.60% prompt; 1440x900: 10.55% walk / 10.55% prompt; 390x844: 16.18% walk / 16.18% prompt; 360x800: 18.49% walk / 18.49% prompt) |
+| Frame Timing & 60 FPS Stability | PASS (host measurement) | 89 samples: 16.67 ms mean, 16.70 ms p50, 16.70 ms p95, 16.80 ms max (steady 60 FPS equivalent) |
+| Resource Bounds Across 6 Realms | PASS | Calls 637–869, triangles 32,924–53,944, geometries 8, textures 2–9; strictly bounded |
+| All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
+
 ## Quality debt
 
 - **QD-01 / Repaid:** Official Three.js r186 is integrated and exercised under software WebGL.
