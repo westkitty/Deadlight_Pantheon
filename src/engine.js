@@ -220,6 +220,10 @@ class GLWorld {
   const fogFar=world==='basilica'?114:world==='eclipse'?116:world==='city'?138:124;
   if(!this.scene.fog)this.scene.fog=new THREE.Fog(fogColor,fogNear,fogFar);
   else{this.scene.fog.color.copy(fogColor);this.scene.fog.near=fogNear;this.scene.fog.far=fogFar;}
+  const swayX=Math.sin(time*.35)*2.2,swayZ=Math.cos(time*.28)*1.8;
+  this.key.position.set(-12+swayX,24,20+swayZ);
+  this.key.intensity=2.8+Math.sin(time*1.6)*.2;
+  this.rim.intensity=3.4+Math.cos(time*1.4)*.25;
   if(world==='eclipse'){
    this.rim.color.setHex(0xff3f56);this.key.color.setHex(0xff9e76);this.fill.color.setHex(0x5a1828);
    this.ambient.color.setHex(0x351222);this.ambient.groundColor.setHex(0x18070e);

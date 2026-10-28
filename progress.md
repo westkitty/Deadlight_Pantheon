@@ -77,3 +77,12 @@ Original prompt: Deadlight Pantheon — the world and titans especially need to 
 - Polished commercial glassmorphic HUD styling with dark frosted glass (`backdrop-filter: blur(16px)`), luminous hairline borders, glowing hover states, and refined typography.
 - Mobile overlay occupancy tightened (1920x1080: 5.46%, 1440x900: 10.55%, 390x844: 16.18%, 360x800: 18.49% — well below the hard 20% limit).
 - Rebuilt `index.html` (2,681,666 bytes) and verified with full smoke test suite: 60 FPS frame time (16.67 ms mean/p95), 6 live Three.js realm transitions with bounded resources, 0 page errors, 0 network requests.
+
+## 2026-10-28 Colossus Gaze Tracking, Spatial Audio & Radiant Feedback
+
+- Titan living colossus gaze tracking: `stage.face` dynamically tracks the traveler's horizontal position across the nave aisle and tilts downward as the traveler nears the monument (`clamp(PLAYER.x * .022, -.14, .14)` yaw, `clamp((8 - PLAYER.z) * .003, 0, .11)` pitch), creating an overwhelming sense of ancient colossal scale and awareness.
+- Companion hound and aura motion: dog companion wags tail with speed-dependent cadence, and traveler aura rotates with breathing scale.
+- Dynamic celestial lighting drift: Three.js key and rim directional lights sway organically with subtle intensity modulation in `GLWorld.render`, producing breathing specular highlights across metallic and stone surfaces.
+- Spatial Web Audio beacon resonance and titan infrasound: crystalline harmonic beacon hum scales up smoothly as player approaches memory altars (`d < 22m`), and a profound sub-bass infrasound drone (43.65 Hz) resonates when the player tilts their gaze upward toward the towering titan head.
+- Radiant full-screen verdict flash: `#flash-fx` overlay bursts with cyan radial bloom for Unbound verdicts and warm amber for Sealed verdicts, synchronizing with camera trauma kick.
+- Rebuilt `index.html` (2,684,404 bytes) and verified with full smoke test suite: 60 FPS frame time (16.67 ms mean/p95), 6 live Three.js realm transitions with bounded resources, 0 page errors, 0 network requests.

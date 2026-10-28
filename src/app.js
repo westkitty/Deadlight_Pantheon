@@ -29,7 +29,7 @@ function nearestActive(){const i=APP.chapter,next=firstPending(i);let c=null;for
 function interact(){if(APP.dialog)return;if(!APP.started){enterWorld();return}if(!ENGINE){const next=firstPending(APP.chapter);if(next===3){if(APP.chapter===5){if(canConclude())openEnding();else{openMap();toast('The Seventh Silence requires all eighteen testimonies.')}}else goChapter(APP.chapter+1)}else openScene(APP.chapter,next);return}const n=APP.near||nearestActive();if(!n){if(!ENGINE){openScene(APP.chapter,Math.min(2,firstPending(APP.chapter)));return}const next=firstPending(APP.chapter);const a=ALTA_POS[Math.min(2,next)];toast(`Follow the causeway to ${next===3?'the gate':BOOK[APP.chapter].scenes[next].object}.`);return}if(n.blocked){toast('This memory is still sealed. Complete the preceding testimony.');return}if(n.kind==='event')openScene(APP.chapter,n.index);else if(n.kind==='portal'){if(APP.chapter<5)goChapter(APP.chapter+1);else if(canConclude())openEnding();else{openMap();toast('The archive is incomplete. Return to the unwitnessed realms.');}}}
 function openScene(index,stageIndex){if(stageIndex>firstPending(index)&&!saved.events[index+':'+stageIndex]){toast('Recover the earlier memory before opening this one.');return;}SOUND.witnessChime();const b=BOOK[index],s=b.scenes[stageIndex];const key=index+':'+stageIndex,prior=!!saved.events[key];const plateTime=ECHO_TIMES[b.ref][stageIndex].toFixed(1);const body=s.body.map(p=>`<p>${safe(p)}</p>`).join('');let choices=!prior?`<div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn" data-choice="0">${safe(s.choices[0])}</button><button class="btn secondary" data-choice="1">${safe(s.choices[1])}</button></div>`:`<div class="witness-recall"><b>YOUR RECORDED RESPONSE</b><p>${safe(s.responses[saved.decisions[key]??0])}</p><small>${saved.decisions[key]===0?'UNBOUND MEMORY':'SEALED MEMORY'}</small></div><button class="btn" data-close>RETURN TO THE WORLD</button><button class="btn secondary" data-codex="${index}">THE FULL DOSSIER</button>`;
  showSheet(headerShell(`${b.num} / ${safe(b.name)} · ${safe(s.sub)}`,`<div class="sheet-main"><div class="sheet-copy"><div class="sheet-kicker" style="color:#9dddf3">${safe(s.object)}</div><h2>${safe(s.title)}</h2><p class="lead">${safe(s.lead)}</p>${body}<blockquote>${safe(s.line)}</blockquote>${prior?'<div style="font-size:11px;color:#8dccdb;letter-spacing:.14em;margin-bottom:17px">✓ TESTIMONY PRESERVED</div>':''}${choices}</div><div class="sheet-art" style="background-image:url('${sceneImage(index,stageIndex)}')"><div class="image-source">FILM ECHO / ${plateTime}S / ORIGINAL REFERENCE</div></div></div><div class="sheet-footer"><span class="footer-note">Memory ${stageIndex+1} of 3 · ${safe(b.domain)}</span><span class="footer-note">${safe(b.years)}</span></div>`),'scene');sheet.dataset.scene=stageIndex;sheet.dataset.chapter=index;}
-function chooseScene(which){SOUND.verdict(which===0);CAMERA.kick(which===0?.16:.22);const i=+sheet.dataset.chapter,j=+sheet.dataset.scene,s=BOOK[i].scenes[j];const key=i+':'+j;if(!saved.events[key]){saved.events[key]=true;saved.decisions[key]=which;persist();if(STAGE)applyProgress(STAGE);updateUI();cinematic(which===0?'The memory opens a new possibility.':'The memory hardens into certainty.');}let complete=firstPending(i)===3;
+function chooseScene(which){SOUND.verdict(which===0);CAMERA.kick(which===0?.16:.22);const f=el('flash-fx');if(f){f.style.background=which===0?'radial-gradient(circle at 50% 45%, rgba(111,213,236,0.48) 0%, rgba(111,213,236,0.12) 48%, transparent 72%)':'radial-gradient(circle at 50% 45%, rgba(246,172,141,0.48) 0%, rgba(246,172,141,0.12) 48%, transparent 72%)';f.style.opacity='1';f.style.transition='none';requestAnimationFrame(()=>{f.style.transition='opacity .75s cubic-bezier(0.16,1,0.3,1)';f.style.opacity='0';});}const i=+sheet.dataset.chapter,j=+sheet.dataset.scene,s=BOOK[i].scenes[j];const key=i+':'+j;if(!saved.events[key]){saved.events[key]=true;saved.decisions[key]=which;persist();if(STAGE)applyProgress(STAGE);updateUI();cinematic(which===0?'The memory opens a new possibility.':'The memory hardens into certainty.');}let complete=firstPending(i)===3;
  let html=headerShell(`${BOOK[i].num} / TESTIMONY RECORDED`,`<div class="sheet-main"><div class="sheet-copy"><div class="sheet-kicker" style="color:var(--cyan)">THE ARCHIVE REMEMBERS</div><h2>THE WITNESS<br>HAS SPOKEN.</h2><p class="lead">${safe(s.responses[which])}</p><p>The monument now carries the color of your decision: turquoise for a memory left open, amber for one sealed into certainty. You can return to this event, but its first choice remains recorded.</p><div class="balance-note">${witnessBalance().unbound} UNBOUND &nbsp; / &nbsp; ${witnessBalance().sealed} SEALED</div><blockquote>${safe(s.line)}</blockquote><button class="btn" data-close>${complete?'RETURN TO THE MERIDIAN GATE':'CONTINUE WALKING'} &nbsp; ▸</button><button class="btn secondary" data-map>VIEW ALL REALMS</button></div><div class="sheet-art" style="background-image:url('${sceneImage(i,j)}')"><div class="image-source">TESTIMONY ${j+1} / SOURCE FRAME ${ECHO_TIMES[BOOK[i].ref][j].toFixed(1)}S</div></div></div><div class="sheet-footer"><span class="footer-note">${progressTotal()} of 18 memories recovered</span><span class="footer-note">${complete?'Realm complete — the portal is active':'Follow the next memory beacon'}</span></div>`);
  sheetContent.innerHTML=html;sheetContent.querySelector('[data-close]')?.focus();if(complete){cinematic(`The ${BOOK[i].name.toLowerCase()} gate has awakened.`);if(i===5)setTimeout(()=>toast('All six testimonies can now be brought before the Seventh Silence.'),1000)} }
 function openMap(){const cards=BOOK.map((b,i)=>`<button class="map-chapter" data-chapter="${i}"><img src="${chapterImage(i)}" alt="Video reference still of ${safe(b.name)}"><span class="count">${firstPending(i)} / 3</span><div class="map-chapter-content"><small>REALM ${b.num} / ${safe(b.domain)}</small><strong>${safe(b.name)}</strong><p>${safe(b.epithet)}</p></div></button>`).join('');showSheet(headerShell('ARCHIVE READING MODE / MERIDIAN ATLAS',`<div style="padding:22px 26px 4px"><h2 style="font:400 34px Georgia,serif;margin:0">The six impossible mercies</h2><p style="font-size:13px;line-height:1.7;color:var(--muted);max-width:790px">Every realm can be visited in any order. Walk to three beacons to recover the choices that made each titan. Only all eighteen testimonies can open the Seventh Silence. Each memory has its own archival frame from the original film.</p><div class="balance-note">${witnessBalance().unbound} UNBOUND &nbsp; / &nbsp; ${witnessBalance().sealed} SEALED · YOUR CHOICES WILL SHAPE THE END</div></div><div class="map-grid">${cards}</div><div class="sheet-footer"><span class="footer-note">${progressTotal()} / 18 TESTIMONIES</span><button class="btn secondary" data-close>RETURN TO EXPLORATION</button></div>`),'map')}
@@ -60,6 +60,7 @@ const runButton=el('touch-run');runButton.addEventListener('pointerdown',e=>{e.p
 // Procedural dark ambient soundscape: opt-in, synthesized in-browser, strictly offline.
 const SOUND={
  ctx:null,master:null,compressor:null,droneNodes:[],noiseBuffer:null,currentRealm:-1,stepAccum:0,
+ beaconGain:null,beaconOsc:null,colossusGain:null,colossusOsc:null,
  init(){
   if(this.ctx)return true;
   try{
@@ -80,6 +81,22 @@ const SOUND={
    this.noiseBuffer=this.ctx.createBuffer(1,len,this.ctx.sampleRate);
    const d=this.noiseBuffer.getChannelData(0);
    for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+   this.beaconGain=this.ctx.createGain();
+   this.beaconGain.gain.setValueAtTime(.0001,this.ctx.currentTime);
+   this.beaconGain.connect(this.master);
+   this.beaconOsc=this.ctx.createOscillator();
+   this.beaconOsc.type='sine';
+   this.beaconOsc.frequency.setValueAtTime(528,this.ctx.currentTime);
+   this.beaconOsc.connect(this.beaconGain);
+   this.beaconOsc.start();
+   this.colossusGain=this.ctx.createGain();
+   this.colossusGain.gain.setValueAtTime(.0001,this.ctx.currentTime);
+   this.colossusGain.connect(this.master);
+   this.colossusOsc=this.ctx.createOscillator();
+   this.colossusOsc.type='sine';
+   this.colossusOsc.frequency.setValueAtTime(43.65,this.ctx.currentTime);
+   this.colossusOsc.connect(this.colossusGain);
+   this.colossusOsc.start();
    return true;
   }catch(e){return false;}
  },
@@ -98,6 +115,8 @@ const SOUND={
   this.master.gain.cancelScheduledValues(now);
   this.master.gain.setValueAtTime(this.master.gain.value,now);
   this.master.gain.linearRampToValueAtTime(.0001,now+.5);
+  if(this.beaconGain)this.beaconGain.gain.setValueAtTime(.0001,now);
+  if(this.colossusGain)this.colossusGain.gain.setValueAtTime(.0001,now);
   setTimeout(()=>{this.clearDrone();this.currentRealm=-1;},550);
  },
  clearDrone(){
@@ -108,6 +127,8 @@ const SOUND={
   if(!APP.sound||!this.ctx||this.currentRealm===r)return;
   this.currentRealm=r;
   const now=this.ctx.currentTime;
+  if(this.beaconOsc){const bf=[528,587.33,440,493.88,659.25,440][r]||528;this.beaconOsc.frequency.setValueAtTime(bf,now);}
+  if(this.colossusOsc){const cf=[43.65,36.71,32.7,49,38.89,34.65][r]||43.65;this.colossusOsc.frequency.setValueAtTime(cf,now);}
   const old=[...this.droneNodes];this.droneNodes=[];
   for(const item of old){
    try{
@@ -188,7 +209,7 @@ const SOUND={
 function setAudio(on){APP.sound=on;el('sound').setAttribute('aria-pressed',String(on));el('sound').textContent=on?'♫':'♩';if(on){SOUND.start();toast('Audio enabled: procedural soundscape active.');}else{SOUND.stop();}}
 el('sound').onclick=()=>setAudio(!APP.sound);
 function move(dt){if(!ENGINE)return;let dx=0,dy=0;if(KEY.w||KEY.arrowup)dy++;if(KEY.s||KEY.arrowdown)dy--;if(KEY.a||KEY.arrowleft)dx--;if(KEY.d||KEY.arrowright)dx++;dx+=PLAYER.joyX;dy+=PLAYER.joyY;const m=Math.hypot(dx,dy);if(m>.01){dx/=Math.max(1,m);dy/=Math.max(1,m);const speed=(KEY.shift||PLAYER.running?9.8:5.25),a=PLAYER.camYaw;const vx=(dx*Math.cos(a)-dy*Math.sin(a))*speed,vz=(-dy*Math.cos(a)-dx*Math.sin(a))*speed;PLAYER.x=clamp(PLAYER.x+vx*dt,-6.2,6.2);PLAYER.z=clamp(PLAYER.z+vz*dt,-33.9,16);PLAYER.vx=vx;PLAYER.vz=vz;PLAYER.face=lerp(PLAYER.face,Math.atan2(vx,-vz),.13);SOUND.stepAccum+=dt*(KEY.shift||PLAYER.running?1.7:1.0);if(SOUND.stepAccum>.42){SOUND.stepAccum=0;SOUND.step(KEY.shift||PLAYER.running);}}else{PLAYER.vx=0;PLAYER.vz=0;SOUND.stepAccum=0;}}
-function renderGame(now,dt){if(!STAGE||!ENGINE)return;const time=now*.001;animateStage(STAGE,time,dt);const p=STAGE.player;if(p){p.traveler.pos=[PLAYER.x,0,PLAYER.z];p.traveler.rot[1]=PLAYER.face+Math.PI;p.traveler.visible=APP.view==='third';p.dog.pos=[PLAYER.x+1.25,0,PLAYER.z+1.1];p.dog.rot[1]=PLAYER.face+Math.PI;p.dog.visible=true;const moving=Math.hypot(PLAYER.vx,PLAYER.vz)>1;if(APP.motion){p.cloak.rot[0]=moving?Math.sin(time*8)*.07:Math.sin(time*1.2)*.015;p.dog.pos[1]=moving?Math.abs(Math.sin(time*9))*.08:0;}}
+function renderGame(now,dt){if(!STAGE||!ENGINE)return;const time=now*.001;animateStage(STAGE,time,dt);const p=STAGE.player;if(p){p.traveler.pos=[PLAYER.x,0,PLAYER.z];p.traveler.rot[1]=PLAYER.face+Math.PI;p.traveler.visible=APP.view==='third';p.dog.pos=[PLAYER.x+1.25,0,PLAYER.z+1.1];p.dog.rot[1]=PLAYER.face+Math.PI;p.dog.visible=true;const moving=Math.hypot(PLAYER.vx,PLAYER.vz)>1;if(APP.motion){p.cloak.rot[0]=moving?Math.sin(time*8)*.07:Math.sin(time*1.2)*.015;p.dog.pos[1]=moving?Math.abs(Math.sin(time*9))*.08:0;if(p.tail)p.tail.rot[1]=moving?Math.sin(time*14)*.38:Math.sin(time*2.5)*.12;if(p.aura){p.aura.rot[2]+=dt*.45;const asz=2.6+Math.sin(time*2.2)*.12;p.aura.scale[0]=asz;p.aura.scale[1]=asz;}}}
  let eye,at;const yaw=PLAYER.camYaw,pitch=PLAYER.camPitch;if(APP.view==='third'){const cd=PLAYER.camDist;eye=[PLAYER.x+Math.sin(yaw)*cd,6.1+pitch*3.5,PLAYER.z+Math.cos(yaw)*cd];at=[PLAYER.x-Math.sin(yaw)*5,4.05+pitch*4.5,PLAYER.z-Math.cos(yaw)*5];}else{const moving=Math.hypot(PLAYER.vx,PLAYER.vz)>1,bob=(APP.motion&&moving)?Math.sin(time*7.5)*.042:0,bobSway=(APP.motion&&moving)?Math.cos(time*3.75)*.025:0;eye=[PLAYER.x+Math.cos(yaw)*bobSway,1.93+bob,PLAYER.z-Math.sin(yaw)*bobSway];at=[PLAYER.x-Math.sin(yaw)*10,2.1+pitch*12+bob*.5,PLAYER.z-Math.cos(yaw)*10];}
  if(CAMERA.shake>.001){eye[0]+=(Math.random()-.5)*CAMERA.shake;eye[1]+=(Math.random()-.5)*CAMERA.shake*.7;CAMERA.shake*=.88;}
  ENGINE.render(eye,at,STAGE.style.fog,time,STAGE.world);
@@ -197,6 +218,7 @@ function frame(now){window.__deadlightFrame=requestAnimationFrame(frame);if(!APP
 function updateWayfinder(){if(!ENGINE||!STAGE||APP.dialog)return;const o=nextObjective(),p=o.pos,dx=p[0]-PLAYER.x,dz=p[2]-PLAYER.z,y=PLAYER.camYaw,rx=dx*Math.cos(y)-dz*Math.sin(y),fz=-dx*Math.sin(y)-dz*Math.cos(y),angle=Math.atan2(rx,fz)*180/Math.PI;el('way-arrow').style.transform=`rotate(${angle}deg)`;el('way-title').textContent=o.label;el('way-distance').textContent=Math.round(Math.hypot(dx,dz))+' m';}
 function updateProximity(){if(APP.dialog)return;if(!ENGINE){el('interact-hint').style.display='none';el('dist-text').textContent='SELECT A MEMORY TO CONTINUE';return}const n=nearestActive();APP.near=n;const hint=el('interact-hint');if(n){hint.style.display='flex';const text=n.kind==='portal'?(n.blocked?'Gate sealed: recover all three memories':'Enter the next realm / complete the pilgrimage'):`${n.blocked?'Sealed: ':''}${n.title}`;el('interact-copy').textContent=text;hint.style.opacity=n.blocked?.55:1;}else{hint.style.display='none';}
  const next=firstPending(APP.chapter),target=next===3?PORTAL_POS:ALTA_POS[next],d=Math.round(Math.hypot(PLAYER.x-target[0],PLAYER.z-target[2]));el('dist-text').textContent=`${next===3?'MERIDIAN GATE':'NEXT MEMORY'} · ${d}m`;
+ if(APP.sound&&SOUND.ctx&&SOUND.beaconGain&&SOUND.colossusGain){const now=SOUND.ctx.currentTime,bVol=d<22?Math.pow(1-d/22,1.6)*.032:.0001;SOUND.beaconGain.gain.setTargetAtTime(bVol,now,.18);const lookUp=Math.max(0,(PLAYER.camPitch-.22)/.48),cVol=lookUp>.02?lookUp*.038:.0001;SOUND.colossusGain.gain.setTargetAtTime(cVol,now,.22);}
 }
 function overlayOccupancy(){
  const selectors=['.topline>div:first-child','.hud-actions','#location','.meter','#interact-hint','.hud-bottom-right','#wayfinder','#touch>.joy','#touch>.touch-actions','#rail.open','#hud-return'];

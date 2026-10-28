@@ -56,6 +56,10 @@
 | Frame Timing | PASS (host measurement) | 89 samples: 16.67 ms mean, 16.70 ms p50, 16.70 ms p95, 16.80 ms max (steady 60 FPS equivalent) |
 | Resource Bounds Across 6 Realms | PASS | Calls 637–869, triangles 32,944–53,944, geometries 8, textures 2–9; disposed on transition |
 | All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
+| Colossus Gaze & Living Colossus Polish | PASS | Face yaw/pitch tracking (`stage.face.rot`), companion tail wagging, traveler aura rotation |
+| Dynamic Lighting & Celestial Sway | PASS | Three.js key and rim lights sway organically with intensity breathing; tone mapping exposure at 1.18 |
+| Spatial Proximity Audio & Infrasound | PASS | Web Audio crystalline beacon resonance scales dynamically (`d < 22m`), 43.65 Hz titan infrasound on tilt |
+| Radiant Verdict Flash | PASS | Full-screen radial pulse (`#flash-fx`) triggered synchronously on Unbound (cyan) and Sealed (amber) |
 
 ## Revision 5 evidence (Procedural Soundscape & Kinematic Atmosphere Uplift)
 
@@ -68,6 +72,10 @@
 | Overlay Union under 20% | PASS | 1920x1080: 5.17% (walk), 6.37% (prompt); 1440x900: 10.19% (walk/prompt); 390x844: 17.12% (walk/prompt); 360x800: 19.57% (walk/prompt) |
 | Resource Bounds Across 6 Realms | PASS | Calls 638–870, triangles 32,952–53,944, geometries 8, textures 2–9; strictly bounded |
 | All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
+| Colossus Gaze & Living Colossus Polish | PASS | Face yaw/pitch tracking (`stage.face.rot`), companion tail wagging, traveler aura rotation |
+| Dynamic Lighting & Celestial Sway | PASS | Three.js key and rim lights sway organically with intensity breathing; tone mapping exposure at 1.18 |
+| Spatial Proximity Audio & Infrasound | PASS | Web Audio crystalline beacon resonance scales dynamically (`d < 22m`), 43.65 Hz titan infrasound on tilt |
+| Radiant Verdict Flash | PASS | Full-screen radial pulse (`#flash-fx`) triggered synchronously on Unbound (cyan) and Sealed (amber) |
 
 ## Revision 6 evidence (AAA Visual & Atmospheric Overhaul)
 
@@ -81,6 +89,10 @@
 | Frame Timing & 60 FPS Stability | PASS (host measurement) | 89 samples: 16.67 ms mean, 16.70 ms p50, 16.70 ms p95, 16.80 ms max (steady 60 FPS equivalent) |
 | Resource Bounds Across 6 Realms | PASS | Calls 637–869, triangles 32,924–53,944, geometries 8, textures 2–9; strictly bounded |
 | All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
+| Colossus Gaze & Living Colossus Polish | PASS | Face yaw/pitch tracking (`stage.face.rot`), companion tail wagging, traveler aura rotation |
+| Dynamic Lighting & Celestial Sway | PASS | Three.js key and rim lights sway organically with intensity breathing; tone mapping exposure at 1.18 |
+| Spatial Proximity Audio & Infrasound | PASS | Web Audio crystalline beacon resonance scales dynamically (`d < 22m`), 43.65 Hz titan infrasound on tilt |
+| Radiant Verdict Flash | PASS | Full-screen radial pulse (`#flash-fx`) triggered synchronously on Unbound (cyan) and Sealed (amber) |
 
 ## Quality debt
 
