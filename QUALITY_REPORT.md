@@ -57,6 +57,18 @@
 | Resource Bounds Across 6 Realms | PASS | Calls 637–869, triangles 32,944–53,944, geometries 8, textures 2–9; disposed on transition |
 | All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
 
+## Revision 5 evidence (Procedural Soundscape & Kinematic Atmosphere Uplift)
+
+| Requirement | State | Evidence |
+|---|---|---|
+| Procedural Audio Soundscape | PASS | Zero-dependency, offline Web Audio engine (`SOUND`) with 6 distinct realm drone chords, crossfading, footstep locomotion audio, bronze witness chimes, harmonic verdict chords, and gate sweeps |
+| Kinematic First-Person Head-Bob | PASS | Grounded vertical and lateral camera sway synced with walking/sprint velocity; disabled when reduced motion is preferred |
+| Titan Organic Micro-Animations | PASS | Double systolic/diastolic heartbeat for Seraphine's forbidden heart, scale breathing for Malach's mask, Thaum-IX chest waveform resonance, and Azrath electric quantum jitter |
+| Frame Timing & 60 FPS Stability | PASS (host measurement) | 89 samples: 16.67 ms mean, 16.70 ms p50, 16.70 ms p95, 16.80 ms max (steady 60 FPS equivalent) |
+| Overlay Union under 20% | PASS | 1920x1080: 5.17% (walk), 6.37% (prompt); 1440x900: 10.19% (walk/prompt); 390x844: 17.12% (walk/prompt); 360x800: 19.57% (walk/prompt) |
+| Resource Bounds Across 6 Realms | PASS | Calls 638–870, triangles 32,952–53,944, geometries 8, textures 2–9; strictly bounded |
+| All 18 Testimonies & 3 Endings | PASS | Verified in headless Chrome: balanced, unbound, and sealed paths reached with persistent geometry tinting |
+
 ## Quality debt
 
 - **QD-01 / Repaid:** Official Three.js r186 is integrated and exercised under software WebGL.

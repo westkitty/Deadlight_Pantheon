@@ -50,3 +50,20 @@ Original prompt: Deadlight Pantheon — the world and titans especially need to 
 - Fixed compass HUD layout glitch where `.compass span` applied a 7px cyan square constraint to `#dist-text`, rotating and clipping distance text in the bottom right corner. Changed selector to `.compass>span:first-child`.
 - Made realm crumb display dynamic across all 6 realms (`${BOOK[i].domain} / DEADLIGHT ${BOOK[i].num}`).
 - Ran full browser verification suite (`tests/smoke.py`) via Google Chrome: all 6 realms, all 18 events, 3 endings, context loss/restoration, bounded resources, 60 FPS host frame timing, and strict < 20% HUD occupancy across all 4 viewports passed with 0 errors.
+
+## 2026-10-28 procedural soundscape & kinematic atmosphere uplift
+
+- Implemented procedural Web Audio soundscape engine (`SOUND`): zero runtime dependencies, strictly offline, opt-in via audio toggle button (`♩`/`♫`).
+- Tuned realm-specific frequency chords and acoustic timbres:
+  - Cathedral: A minor shimmer (55.0/110.0/130.81 Hz + 220 Hz detuned by 1.5 Hz creating a slow hypnotic acoustic beat).
+  - Basilica: Sub-bass F0/C1 stillness (43.65/65.41/87.31 Hz) with filtered white-noise cathedral drafts.
+  - Obsidian Court: Tritone dissonance (low D1 at 36.71 Hz + G#1 augmented fourth at 51.91 Hz) with filtered saw grind.
+  - City of Bells: Pentatonic bronze cluster (73.42/110.0/146.83/293.66 Hz).
+  - Mourning Spire: Cataract sub-bass (58.27/69.30 Hz) with dynamic lowpass noise simulating cascading blue rivers.
+  - The Unhappened: 110.0/110.6 Hz binaural beating pair (0.6 Hz delta-alpha wave resonance) with delicate 880 Hz glass overtone.
+- Seamless cross-fading of ambient drone tracks during realm transitions.
+- Added tactile stone footstep synthesis (`SOUND.step`) synced with player movement cadence and sprint speed.
+- Resonant dual-tone bronze witness chime upon opening memories, distinct harmonic verdict chords (unbound ascending major triad vs sealed deep fifth), and resonant ascending lowpass gate sweeps.
+- Added first-person kinematic head-bob and subtle lateral sway synced with movement, automatically disabled when reduced motion is preferred.
+- Added titan organic micro-animations: systolic/diastolic double heartbeat for Seraphine's forbidden heart, rhythmic breathing pulse for Malach's mask, Thaum-IX's resonant waveform chest, and Azrath's electric quantum jitter.
+- Rebuilt `index.html` (2,677,062 bytes) and executed full smoke test suite: all 6 realms, all 18 events, 3 endings, context recovery, 60 FPS frame time (16.67 ms mean/p95), and strict < 20% HUD occupancy passed with 0 errors.

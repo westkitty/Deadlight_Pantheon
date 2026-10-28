@@ -21,7 +21,7 @@ function adornRealm(root,index,stage,seed){
    if(j%2===0){ob(root,'crystal','pale',[s*13.8,8,z-1],[.5,7.5,.5]);ob(root,'cube','bone',[s*10.6,5.7,z],[.13,8.5,.2]);}
   }}
   for(const z of [2,-21,-38])overhead(z,17,'pale');
-  const heart=group(root,[-19,11,-24]);ob(heart,'sphere','red',[0,0,0],[2.8,3.4,2.2]);ob(heart,'torus','bone',[0,0,-.7],[6.5,6.5,.6]);stage.realmDetails.push({n:heart,phase:1,base:11,kind:'bob'});
+  const heart=group(root,[-19,11,-24]);ob(heart,'sphere','red',[0,0,0],[2.8,3.4,2.2]);ob(heart,'torus','bone',[0,0,-.7],[6.5,6.5,.6]);stage.realmDetails.push({n:heart,phase:1,base:11,kind:'bob'});stage.heart=heart;
  }
  if(index===2){ // Court: testimony tablets, scales and the burning orbit of the Black Meridian.
   for(let j=0;j<9;j++){let z=12-j*7.2;for(let s of [-1,1]){

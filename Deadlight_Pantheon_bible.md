@@ -33,3 +33,19 @@
 - Dynamic realm metadata correctly updates `#location-label` and `#location` across all six chapters to reflect canonical domain names and chapter titles.
 - Shared Gothic nave architecture refined to maintain open axial sightlines to the six titans, matching the framing of the 2D film stills.
 - Automated browser suite verified with Google Chrome headless software WebGL: 60 FPS equivalent host frame time, bounded GPU resources across 6 realms, strict < 20% overlay union (5.17%–19.57%), all 18 testimonies, all 3 ending branches, and context loss recovery.
+
+## 2026-10-28 / Procedural Soundscape & Kinematic Atmosphere Uplift
+- Procedural Web Audio soundscape engine (`SOUND`): zero runtime dependencies, strictly offline, opt-in via audio toggle button (`♩`/`♫`).
+- Tuned realm-specific frequency chords and acoustic timbres:
+  - Cathedral: A minor shimmer (55.0/110.0/130.81 Hz + 220 Hz detuned by 1.5 Hz creating a slow hypnotic acoustic beat).
+  - Basilica: Sub-bass F0/C1 stillness (43.65/65.41/87.31 Hz) with filtered white-noise cathedral drafts.
+  - Obsidian Court: Tritone dissonance (low D1 at 36.71 Hz + G#1 augmented fourth at 51.91 Hz) with filtered saw grind.
+  - City of Bells: Pentatonic bronze cluster (73.42/110.0/146.83/293.66 Hz).
+  - Mourning Spire: Cataract sub-bass (58.27/69.30 Hz) with dynamic lowpass noise simulating cascading blue rivers.
+  - The Unhappened: 110.0/110.6 Hz binaural beating pair (0.6 Hz delta-alpha wave resonance) with delicate 880 Hz glass overtone.
+- Seamless cross-fading of ambient drone tracks during realm transitions.
+- Tactile stone footstep synthesis (`SOUND.step`) synced with player movement cadence and sprint speed.
+- Resonant dual-tone bronze witness chime upon opening memories, distinct harmonic verdict chords (unbound ascending major triad vs sealed deep fifth), and resonant ascending lowpass gate sweeps.
+- First-person kinematic head-bob and subtle lateral sway synced with movement, automatically disabled when reduced motion is preferred.
+- Titan organic micro-animations: systolic/diastolic double heartbeat for Seraphine's forbidden heart, rhythmic breathing pulse for Malach's mask, Thaum-IX's resonant waveform chest, and Azrath's electric quantum jitter.
+- Empirically verified with `tests/smoke.py`: 60 FPS equivalent frame times (16.67 ms mean/p95), 6 live Three.js transitions, HUD overlay strictly < 20% (5.17%–19.57%), 18 memories, 3 endings, 0 errors, 0 network requests.
